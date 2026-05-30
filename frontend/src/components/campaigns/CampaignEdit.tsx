@@ -67,7 +67,7 @@ function RewardManager({ campaignId }: { campaignId: string }) {
       </div>
 
       {showForm && (
-        <div className="border border-indigo-200 bg-indigo-50/30 rounded-2xl p-4 mb-4 space-y-3">
+        <div className="border border-brand-200 dark:border-brand-500/20 bg-brand-50/30 dark:bg-brand-500/10 rounded-2xl p-4 mb-4 space-y-3">
           <h4 className="text-xs font-semibold uppercase tracking-wider">New Reward</h4>
           <div className="grid grid-cols-2 gap-3">
             <Input label="Title" placeholder="e.g. Early Supporter" value={form.title} onChange={e => set('title', e.target.value)} required />
@@ -89,11 +89,11 @@ function RewardManager({ campaignId }: { campaignId: string }) {
       ) : (
         <div className="space-y-2.5">
           {rewards.map(r => (
-            <div key={r.id} className="flex items-start justify-between gap-3 p-3.5 border rounded-xl">
+            <div key={r.id} className="flex items-start justify-between gap-3 p-3.5 border border-slate-200 dark:border-white/10 rounded-xl">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-sm font-semibold">{r.title}</span>
-                  <span className="text-xs text-indigo-600 font-medium">${r.minimumAmount}+</span>
+                  <span className="text-xs text-brand-600 font-medium">${r.minimumAmount}+</span>
                   {!r.isAvailable && <Badge variant="danger">Unavailable</Badge>}
                 </div>
                 <p className="text-xs truncate">{r.description}</p>
@@ -160,7 +160,7 @@ function UpdatesPanel({ campaignId }: { campaignId: string }) {
       ) : (
         <div className="space-y-3">
           {updates.map(u => (
-            <div key={u.id} className="p-4 border rounded-xl">
+            <div key={u.id} className="p-4 border border-slate-200 dark:border-white/10 rounded-xl">
               <p className="text-[11px] mb-1">{new Date(u.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}</p>
               <p className="text-sm font-semibold mb-1">{u.title}</p>
               <p className="text-xs leading-relaxed line-clamp-3">{u.content}</p>
@@ -246,8 +246,8 @@ export function CampaignEditPage() {
   if (isLoading) return <PageLoader />;
   if (!data?.data) return (
     <div className="text-center py-20">
-      <p className="">Campaign not found</p>
-      <Link to="/dashboard/campaigns" className="text-indigo-600 text-sm mt-2 inline-block">← Back</Link>
+      <p className="text-slate-500 dark:text-slate-400">Campaign not found</p>
+      <Link to="/dashboard/campaigns" className="text-brand-600 text-sm mt-2 inline-block">← Back</Link>
     </div>
   );
 
@@ -259,7 +259,7 @@ export function CampaignEditPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Link to="/dashboard/campaigns" className="p-2 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+          <Link to="/dashboard/campaigns" className="p-2 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors">
             <ArrowLeft size={16} />
           </Link>
           <div>
@@ -328,7 +328,7 @@ export function CampaignEditPage() {
               onChange={e => set('coverImageUrl', e.target.value)}
             />
             {form.coverImageUrl && (
-              <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-100">
+              <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-100 dark:bg-white/10">
                 <img src={form.coverImageUrl} alt="Cover preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
               </div>
             )}
@@ -368,7 +368,7 @@ export function CampaignEditPage() {
             <label className="flex items-center gap-3 cursor-pointer">
               <div
                 onClick={() => set('allowAnonymous', !form.allowAnonymous)}
-                className={`w-10 h-[22px] rounded-full transition-colors flex items-center px-0.5 ${form.allowAnonymous ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                className={`w-10 h-[22px] rounded-full transition-colors flex items-center px-0.5 ${form.allowAnonymous ? 'bg-brand-600' : 'bg-slate-200 dark:bg-white/15'}`}
               >
                 <div className={`w-4 h-4 rounded-full shadow transition-transform ${form.allowAnonymous ? 'translate-x-[18px]' : ''}`} />
               </div>
@@ -385,7 +385,7 @@ export function CampaignEditPage() {
               options={statusOptions}
             />
             {!isAdmin && (
-              <div className="flex items-start gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl p-3">
+              <div className="flex items-start gap-2 text-xs text-amber-700 dark:text-amber-200 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
                 <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
                 Setting to "Submit for Review" notifies admins. Status ACTIVE requires admin approval.
               </div>

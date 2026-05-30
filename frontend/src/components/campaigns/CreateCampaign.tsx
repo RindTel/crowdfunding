@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Plus, Trash2, Info } from 'lucide-react';
+import { ChevronRight, Plus, Trash2, Info, Rocket } from 'lucide-react';
 import { useCreateCampaign, useCategories } from '../../hooks/useApi';
 import { Input, Textarea, Select, Button, Card } from '../../components/ui';
 import toast from 'react-hot-toast';
@@ -82,16 +82,19 @@ export function CreateCampaignPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-1">Launch a Campaign</h1>
-        <p className="text-sm">Share your vision with the world</p>
+        <p className="eyebrow mb-2"><Rocket size={12} /> Launch</p>
+        <h1 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100 mb-1">Launch a campaign</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-[15px]">Share your vision with the world — it only takes a few minutes.</p>
       </div>
 
       {/* Stepper */}
-      <div className="flex items-center gap-1 mb-8 overflow-x-auto">
+      <div className="flex items-center gap-1 mb-8 overflow-x-auto pb-1">
         {STEPS.map((s, i) => (
           <div key={s} className="flex items-center gap-1 flex-shrink-0">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${i === step ? 'bg-indigo-600 text-white' : i < step ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100'}`}>
-              {i < step ? '✓' : <span className="w-4 h-4 rounded-full border-2 border-current flex items-center justify-center text-[10px]">{i + 1}</span>}
+            <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${i === step ? 'bg-brand-600 text-white shadow-glow-sm' : i < step ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'}`}>
+              {i < step
+                ? <span className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px]">✓</span>
+                : <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center text-[10px] ${i === step ? 'border-white/70' : 'border-slate-300 dark:border-white/15'}`}>{i + 1}</span>}
               {s}
             </div>
             {i < STEPS.length - 1 && <ChevronRight size={12} className="text-slate-300" />}
@@ -130,10 +133,10 @@ export function CreateCampaignPage() {
                 error={errors.goalAmount}
               />
               <div>
-                <label className="block text-sm font-medium mb-1.5">Currency</label>
+                <label className="block text-[13px] font-semibold text-navy-800 dark:text-slate-200 mb-1.5">Currency</label>
                 <select
                   value={form.currency} onChange={e => set('currency', e.target.value)}
-                  className="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-300"
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-navy-950/60 border border-slate-200 dark:border-white/10 rounded-xl text-sm text-navy-900 dark:text-slate-100 shadow-inner-soft cursor-pointer focus:outline-none focus:ring-4 focus:ring-brand-100 focus:border-brand-400 transition-all"
                 >
                   {['USD', 'EUR', 'GBP', 'CAD', 'AUD'].map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -150,8 +153,8 @@ export function CreateCampaignPage() {
         {step === 1 && (
           <div className="space-y-4">
             <h2 className="text-base font-semibold mb-4">Your Campaign Story</h2>
-            <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800">
-              <Info size={15} className="flex-shrink-0 mt-0.5 text-blue-600" />
+            <div className="flex items-start gap-2.5 p-3.5 bg-brand-50 dark:bg-brand-500/10 rounded-xl border border-brand-100 dark:border-brand-500/20 text-sm text-brand-800 dark:text-brand-200">
+              <Info size={16} className="flex-shrink-0 mt-0.5 text-brand-600" />
               <p>A compelling story dramatically improves funding success. Share your motivation, plan, and impact.</p>
             </div>
             <Textarea
@@ -182,13 +185,13 @@ export function CreateCampaignPage() {
 
             {rewards.length === 0 ? (
               <div className="border-2 border-dashed rounded-2xl p-8 text-center">
-                <p className="text-slate-500 text-sm mb-3">No rewards added yet</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-3">No rewards added yet</p>
                 <Button variant="secondary" size="sm" leftIcon={<Plus size={13} />} onClick={addReward}>
                   Add your first reward
                 </Button>
               </div>
             ) : rewards.map((r, i) => (
-              <div key={i} className="border rounded-2xl p-4 space-y-3">
+              <div key={i} className="border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold uppercase tracking-wider">Reward #{i + 1}</span>
                   <button onClick={() => removeReward(i)} className="p-1 hover:text-red-500 transition-colors">
@@ -221,16 +224,16 @@ export function CreateCampaignPage() {
               <Input label="Minimum donation ($)" type="number" placeholder="No minimum" value={form.minDonation} onChange={e => set('minDonation', e.target.value)} />
               <Input label="Maximum donation ($)" type="number" placeholder="No maximum" value={form.maxDonation} onChange={e => set('maxDonation', e.target.value)} />
             </div>
-            <label className="flex items-center gap-3 cursor-pointer p-4 border rounded-xl hover:bg-slate-50 transition-colors">
+            <label className="flex items-center gap-3 cursor-pointer p-4 border border-slate-200 dark:border-white/10 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors select-none">
               <div
                 onClick={() => set('allowAnonymous', !form.allowAnonymous)}
-                className={`w-10 h-5.5 h-[22px] rounded-full transition-colors flex items-center px-0.5 ${form.allowAnonymous ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                className={`w-10 h-[22px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 ${form.allowAnonymous ? 'bg-brand-600' : 'bg-slate-300 dark:bg-white/15'}`}
               >
-                <div className={`w-4 h-4 rounded-full shadow transition-transform ${form.allowAnonymous ? 'translate-x-[18px]' : ''}`} />
+                <div className={`w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${form.allowAnonymous ? 'translate-x-[18px]' : ''}`} />
               </div>
               <div>
-                <p className="text-sm font-medium">Allow anonymous donations</p>
-                <p className="text-xs">Donors can choose to hide their identity</p>
+                <p className="text-sm font-medium text-navy-900 dark:text-slate-100">Allow anonymous donations</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Donors can choose to hide their identity</p>
               </div>
             </label>
           </div>
@@ -248,13 +251,13 @@ export function CreateCampaignPage() {
                 ['Rewards', `${rewards.length} reward(s)`],
                 ['Anonymous donations', form.allowAnonymous ? 'Allowed' : 'Not allowed'],
               ].map(([label, value]) => (
-                <div key={label} className="flex justify-between py-2 border-b border-slate-50">
-                  <span className="">{label}</span>
-                  <span className="font-medium">{value}</span>
+                <div key={label} className="flex justify-between py-2.5 border-b border-slate-100 dark:border-white/10">
+                  <span className="text-slate-500 dark:text-slate-400">{label}</span>
+                  <span className="font-semibold text-navy-900 dark:text-slate-100">{value}</span>
                 </div>
               ))}
             </div>
-            <div className="flex items-start gap-2 p-3 bg-amber-50 rounded-xl border border-amber-100 text-sm text-amber-800">
+            <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-100 dark:border-amber-500/20 text-sm text-amber-800 dark:text-amber-200">
               <Info size={15} className="flex-shrink-0 mt-0.5 text-amber-600" />
               <p>Your campaign will be submitted for review. It will go live once approved by our team.</p>
             </div>

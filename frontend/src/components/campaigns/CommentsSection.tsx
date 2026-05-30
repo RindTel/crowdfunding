@@ -78,7 +78,7 @@ function CommentItem({ comment, campaignId, depth = 0 }: {
               <Heart size={12} /> {comment.likesCount > 0 && comment.likesCount}
             </button>
             {isAuthenticated && depth === 0 && (
-              <button onClick={() => setShowReply(v => !v)} className="flex items-center gap-1 text-xs hover:text-indigo-600 transition-colors">
+              <button onClick={() => setShowReply(v => !v)} className="flex items-center gap-1 text-xs hover:text-brand-600 transition-colors">
                 <Reply size={12} /> Reply
               </button>
             )}
@@ -97,11 +97,11 @@ function CommentItem({ comment, campaignId, depth = 0 }: {
                   value={replyText}
                   onChange={e => setReplyText(e.target.value)}
                   placeholder={`Reply to ${comment.user.firstName}…`}
-                  className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-300"
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleReply()}
                 />
                 <button onClick={handleReply} disabled={createComment.isPending || !replyText.trim()}
-                  className="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+                  className="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors">
                   Post
                 </button>
               </div>
@@ -153,13 +153,13 @@ export function CommentsSection({ campaignId }: { campaignId: string }) {
               onChange={e => setNewComment(e.target.value)}
               placeholder="Share your thoughts or ask a question…"
               rows={3}
-              className="w-full px-4 py-3 text-sm border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 placeholder:text-slate-500"
+              className="w-full px-4 py-3 text-sm border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-brand-300 placeholder:text-slate-500"
             />
             <div className="flex justify-end mt-2">
               <button
                 onClick={handleSubmit}
                 disabled={createComment.isPending || !newComment.trim()}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-colors"
               >
                 {createComment.isPending ? 'Posting…' : 'Post comment'}
               </button>
@@ -170,7 +170,7 @@ export function CommentsSection({ campaignId }: { campaignId: string }) {
         <div className="text-center py-6 rounded-2xl border">
           <MessageCircle size={24} className="text-slate-300 mx-auto mb-2" />
           <p className="text-sm mb-3">Sign in to leave a comment</p>
-          <a href="/login" className="text-sm text-indigo-600 font-medium hover:text-indigo-700">Sign in →</a>
+          <a href="/login" className="text-sm text-brand-600 font-medium hover:text-brand-700">Sign in →</a>
         </div>
       )}
 
