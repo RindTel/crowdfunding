@@ -37,23 +37,23 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#0f1117] to-indigo-950 flex">
+    <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-brand-950 flex">
       {/* Left panel — branding */}
       <div className="hidden lg:flex flex-col justify-between w-[480px] flex-shrink-0 p-12 border-r border-white/5">
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-900/50">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-navy-700 flex items-center justify-center shadow-lg shadow-navy-900/50">
             <Flame size={17} className="text-white" />
           </div>
           <span className="text-white font-bold text-lg tracking-tight">FundForge</span>
         </Link>
 
         <div>
-          <div className="inline-flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 text-brand-400 text-xs font-semibold uppercase tracking-widest bg-brand-500/10 border border-brand-500/20 px-3 py-1.5 rounded-full mb-6">
             <Sparkles size={10} /> Trusted by 1,800+ creators
           </div>
           <h1 className="text-4xl font-bold text-white leading-tight mb-4">
             Fund the ideas<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">that matter most.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-400">that matter most.</span>
           </h1>
           <p className="text-slate-500 text-base leading-relaxed">
             FundForge connects visionary creators with passionate supporters to bring ambitious projects to life.
@@ -76,7 +76,7 @@ export function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-400 to-navy-700 flex items-center justify-center">
               <Flame size={15} className="text-white" />
             </div>
             <span className="text-white font-bold text-base">FundForge</span>
@@ -95,7 +95,7 @@ export function LoginPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.email ? 'border-red-500' : 'border-white/20'}`}
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all ${errors.email ? 'border-red-500' : 'border-white/20'}`}
                 />
               </div>
               {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
@@ -104,7 +104,7 @@ export function LoginPage() {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-sm font-medium text-slate-200">Password</label>
-                <Link to="/forgot-password" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Forgot password?</Link>
+                <Link to="/forgot-password" className="text-xs text-brand-400 hover:text-brand-300 transition-colors">Forgot password?</Link>
               </div>
               <div className="relative">
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -113,7 +113,7 @@ export function LoginPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full pl-10 pr-10 py-3 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.password ? 'border-red-500' : 'border-white/20'}`}
+                  className={`w-full pl-10 pr-10 py-3 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all ${errors.password ? 'border-red-500' : 'border-white/20'}`}
                 />
                 <button type="button" onClick={() => setShowPw(v => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 hover:text-slate-300 transition-colors">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -125,7 +125,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-900/40 disabled:opacity-60 mt-2"
+              className="w-full flex items-center justify-center gap-2 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-brand-900/40 disabled:opacity-60 mt-2"
             >
               {isLoading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : null}
               Sign in
@@ -135,7 +135,7 @@ export function LoginPage() {
 
           <p className="text-center text-sm mt-6">
             Don't have an account?{' '}
-            <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Create one</Link>
+            <Link to="/register" className="text-brand-400 hover:text-brand-300 font-medium transition-colors">Create one</Link>
           </p>
 
           {/* Demo accounts */}
@@ -204,11 +204,11 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#0f1117] to-indigo-950 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-brand-950 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-between mb-8">
           <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-400 to-navy-700 flex items-center justify-center">
               <Flame size={15} className="text-white" />
             </div>
             <span className="text-white font-bold text-base">FundForge</span>
@@ -228,7 +228,7 @@ export function RegisterPage() {
               key={r}
               type="button"
               onClick={() => set('role', r)}
-              className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 text-center transition-all ${form.role === r ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/10 hover:border-white/20'}`}
+              className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 text-center transition-all ${form.role === r ? 'border-brand-500 bg-brand-500/10' : 'border-white/10 hover:border-white/20'}`}
             >
               <span className="text-2xl">{emoji}</span>
               <span className="text-xs font-semibold text-white">{r === 'CREATOR' ? 'Creator' : 'Donor'}</span>
@@ -248,7 +248,7 @@ export function RegisterPage() {
                     value={form[k as keyof typeof form]}
                     onChange={e => set(k, e.target.value)}
                     placeholder={k === 'firstName' ? 'Jane' : 'Doe'}
-                    className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors[k] ? 'border-red-500' : 'border-white/20'}`}
+                    className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all ${errors[k] ? 'border-red-500' : 'border-white/20'}`}
                   />
                 </div>
                 {errors[k] && <p className="mt-1 text-xs text-red-400">{errors[k]}</p>}
@@ -263,7 +263,7 @@ export function RegisterPage() {
               <input
                 type="email" value={form.email} onChange={e => set('email', e.target.value)}
                 placeholder="you@example.com"
-                className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.email ? 'border-red-500' : 'border-white/20'}`}
+                className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all ${errors.email ? 'border-red-500' : 'border-white/20'}`}
               />
             </div>
             {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
@@ -276,7 +276,7 @@ export function RegisterPage() {
               <input
                 type={showPw ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)}
                 placeholder="Min 8 chars, 1 uppercase, 1 number"
-                className={`w-full pl-9 pr-10 py-2.5 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${errors.password ? 'border-red-500' : 'border-white/20'}`}
+                className={`w-full pl-9 pr-10 py-2.5 rounded-xl border text-sm bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all ${errors.password ? 'border-red-500' : 'border-white/20'}`}
               />
               <button type="button" onClick={() => setShowPw(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-slate-300">
                 {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -288,7 +288,7 @@ export function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-900/40 disabled:opacity-60 mt-2"
+            className="w-full flex items-center justify-center gap-2 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-brand-900/40 disabled:opacity-60 mt-2"
           >
             {isLoading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : null}
             Create account
@@ -297,7 +297,7 @@ export function RegisterPage() {
 
         <p className="text-center text-sm mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Sign in</Link>
+          <Link to="/login" className="text-brand-400 hover:text-brand-300 font-medium transition-colors">Sign in</Link>
         </p>
       </div>
     </div>

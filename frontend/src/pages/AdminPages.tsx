@@ -13,7 +13,7 @@ import {
 import {
   useUsers, useSetUserActive, useDeleteUser,
   useDonations, useReports, useResolveReport,
-  useAdminStats, useCreatorStats
+  useAdminStats, useCreatorStats, useDonorStats
 } from '../hooks/useApi';
 import { useAuthStore } from '../store/auth.store';
 import { Badge, PageLoader, EmptyState, Card, Avatar, ProgressBar } from '../components/ui';
@@ -64,7 +64,7 @@ export function AdminUsersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold">User Management</h2>
-          <p className="text-sm mt-0.5">{meta?.total ?? 0} registered users</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{meta?.total ?? 0} registered users</p>
         </div>
         <div className="flex items-center gap-2.5">
           <div className="relative">
@@ -72,12 +72,12 @@ export function AdminUsersPage() {
             <input
               value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
               placeholder="Search by name or email…"
-              className="pl-9 pr-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-300 w-56"
+              className="pl-9 pr-3 py-2 border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-950/60 text-navy-900 dark:text-slate-100 rounded-xl text-sm shadow-inner-soft focus:outline-none focus:ring-4 focus:ring-brand-100 dark:focus:ring-brand-500/20 w-56"
             />
           </div>
           <select
             value={role} onChange={e => { setRole(e.target.value); setPage(1); }}
-            className="px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-300"
+            className="px-3 py-2 border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-950/60 text-navy-900 dark:text-slate-100 rounded-xl text-sm shadow-inner-soft focus:outline-none focus:ring-4 focus:ring-brand-100 dark:focus:ring-brand-500/20"
           >
             {[['', 'All roles'], ['ADMIN', 'Admin'], ['CREATOR', 'Creator'], ['DONOR', 'Donor']].map(([v, l]) => (
               <option key={v} value={v}>{l}</option>
@@ -92,24 +92,24 @@ export function AdminUsersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="bg-slate-50/50 border-b">
+              <thead><tr className="bg-slate-50/50 dark:bg-white/5 border-b">
                 {['User', 'Roles', 'Status', 'Joined', 'Actions'].map(h => (
-                  <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3.5">{h}</th>
+                  <th key={h} className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-5 py-3.5">{h}</th>
                 ))}
               </tr></thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/10">
                 {users.map((u) => {
                   const roles = (u.roles as string[]) ?? [];
                   const isActive = u.isActive as boolean;
                   const uid = u.id as string;
                   return (
-                    <tr key={uid} className="hover:bg-slate-50 transition-colors">
+                    <tr key={uid} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           <Avatar name={`${u.firstName} ${u.lastName}`} src={u.avatarUrl as string | null} />
                           <div>
                             <p className="text-sm font-medium">{u.firstName as string} {u.lastName as string}</p>
-                            <p className="text-xs">{u.email as string}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{u.email as string}</p>
                           </div>
                         </div>
                       </td>
@@ -120,24 +120,24 @@ export function AdminUsersPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <span className={`flex items-center gap-1.5 text-xs font-medium ${isActive ? 'text-emerald-600' : ""}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+                          <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-white/15'}`} />
                           {isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className="text-xs">{new Date(u.createdAt as string).toLocaleDateString()}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{new Date(u.createdAt as string).toLocaleDateString()}</span>
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => handleToggleActive(uid, isActive)}
-                            className={`p-1.5 rounded-lg transition-colors ${isActive ? 'text-slate-500 hover:text-amber-600 hover:bg-amber-50' : 'text-slate-500 hover:text-emerald-600 hover:bg-emerald-50'}`}
+                            className={`p-1.5 rounded-lg transition-colors ${isActive ? 'text-slate-500 dark:text-slate-400 hover:text-amber-600 hover:bg-amber-50' : 'text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'}`}
                             title={isActive ? 'Deactivate' : 'Activate'}
                           >
                             {isActive ? <UserX size={13} /> : <UserCheck size={13} />}
                           </button>
                           {uid !== me?.id && (
-                            <button onClick={() => handleDelete(uid)} className="p-1.5 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                            <button onClick={() => handleDelete(uid)} className="p-1.5 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/15 rounded-lg transition-colors" title="Delete">
                               <Trash2 size={13} />
                             </button>
                           )}
@@ -153,10 +153,10 @@ export function AdminUsersPage() {
 
         {meta && meta.totalPages > 1 && (
           <div className="flex items-center justify-between px-5 py-3.5 border-t">
-            <p className="text-xs">Page {meta.page} of {meta.totalPages}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Page {meta.page} of {meta.totalPages}</p>
             <div className="flex gap-1.5">
-              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors">Prev</button>
-              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors">Next</button>
+              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Prev</button>
+              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Next</button>
             </div>
           </div>
         )}
@@ -184,12 +184,12 @@ export function AdminDonationsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold">Donations</h2>
-          <p className="text-sm mt-0.5">{meta?.total ?? 0} transactions</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{meta?.total ?? 0} transactions</p>
         </div>
         <div className="flex gap-2">
           {['', 'COMPLETED', 'PENDING', 'FAILED', 'REFUNDED'].map(s => (
             <button key={s} onClick={() => { setStatus(s); setPage(1); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${status === s ? 'bg-indigo-600 text-white' : 'bg-white border hover:bg-slate-50'}`}>
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${status === s ? 'bg-brand-600 text-white' : 'bg-white dark:bg-white/5 border dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10'}`}>
               {s || 'All'}
             </button>
           ))}
@@ -202,24 +202,24 @@ export function AdminDonationsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="bg-slate-50/50 border-b">
+              <thead><tr className="bg-slate-50/50 dark:bg-white/5 border-b">
                 {['Donor', 'Campaign', 'Amount', 'Reward', 'Status', 'Date'].map(h => (
-                  <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3.5">{h}</th>
+                  <th key={h} className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-5 py-3.5">{h}</th>
                 ))}
               </tr></thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/10">
                 {donations.map((d) => {
                   const donor = d.donor as { user?: { firstName?: string; lastName?: string } } | null;
                   const campaign = d.campaign as { title?: string; slug?: string } | null;
                   const reward = d.reward as { title?: string } | null;
                   const payment = d.payment as { provider?: string } | null;
                   return (
-                    <tr key={d.id as string} className="hover:bg-slate-50 transition-colors">
+                    <tr key={d.id as string} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-2">
                           <Avatar name={d.isAnonymous ? 'Anon' : `${donor?.user?.firstName ?? 'U'} ${donor?.user?.lastName ?? ''}`} size="sm" />
                           <div>
-                            <p className="text-xs font-medium text-slate-800">
+                            <p className="text-xs font-medium text-slate-800 dark:text-slate-200">
                               {d.isAnonymous ? 'Anonymous' : `${donor?.user?.firstName} ${donor?.user?.lastName}`}
                             </p>
                           </div>
@@ -227,23 +227,23 @@ export function AdminDonationsPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         {campaign?.slug ? (
-                          <Link to={`/campaigns/${campaign.slug}`} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium max-w-[150px] block truncate">
+                          <Link to={`/campaigns/${campaign.slug}`} className="text-xs text-brand-600 hover:text-brand-700 font-medium max-w-[150px] block truncate">
                             {campaign.title}
                           </Link>
-                        ) : <span className="text-xs">—</span>}
+                        ) : <span className="text-xs text-slate-500 dark:text-slate-400">—</span>}
                       </td>
                       <td className="px-5 py-3.5">
                         <p className="text-sm font-bold">{fmtCurrency(Number(d.amount))}</p>
                         <p className="text-[10px]">{d.currency as string} · {payment?.provider}</p>
                       </td>
                       <td className="px-5 py-3.5">
-                        {reward ? <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">{reward.title}</span> : <span className="text-xs">—</span>}
+                        {reward ? <span className="text-xs text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full">{reward.title}</span> : <span className="text-xs text-slate-500 dark:text-slate-400">—</span>}
                       </td>
                       <td className="px-5 py-3.5">
                         <Badge variant={statusVariant[d.status as string] ?? 'default'}>{d.status as string}</Badge>
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className="text-xs">{new Date(d.createdAt as string).toLocaleDateString()}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{new Date(d.createdAt as string).toLocaleDateString()}</span>
                       </td>
                     </tr>
                   );
@@ -254,10 +254,10 @@ export function AdminDonationsPage() {
         )}
         {meta && meta.totalPages > 1 && (
           <div className="flex items-center justify-between px-5 py-3.5 border-t">
-            <p className="text-xs">Page {meta.page} of {meta.totalPages} · {meta.total} total</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Page {meta.page} of {meta.totalPages} · {meta.total} total</p>
             <div className="flex gap-1.5">
-              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50">Prev</button>
-              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50">Next</button>
+              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5">Prev</button>
+              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5">Next</button>
             </div>
           </div>
         )}
@@ -285,7 +285,7 @@ export function AdminReportsPage() {
   const reasonColor: Record<string, string> = {
     SPAM: 'bg-orange-50 text-orange-700', FRAUD: 'bg-red-50 text-red-700',
     INAPPROPRIATE_CONTENT: 'bg-pink-50 text-pink-700', MISLEADING: 'bg-amber-50 text-amber-700',
-    COPYRIGHT: 'bg-purple-50 text-purple-700', OTHER: 'bg-slate-100',
+    COPYRIGHT: 'bg-navy-50 dark:bg-brand-500/15 text-navy-700 dark:text-slate-300', OTHER: 'bg-slate-100 dark:bg-white/10',
   };
 
   return (
@@ -293,12 +293,12 @@ export function AdminReportsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold">Reports</h2>
-          <p className="text-sm mt-0.5">Content moderation queue</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Content moderation queue</p>
         </div>
         <div className="flex gap-2">
           {['PENDING', 'UNDER_REVIEW', 'RESOLVED', 'DISMISSED', ''].map(s => (
             <button key={s} onClick={() => setStatus(s)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${status === s ? 'bg-indigo-600 text-white' : 'bg-white border hover:bg-slate-50'}`}>
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${status === s ? 'bg-brand-600 text-white' : 'bg-white dark:bg-white/5 border dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10'}`}>
               {s || 'All'}
             </button>
           ))}
@@ -319,7 +319,7 @@ export function AdminReportsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${reasonColor[r.reason as string] ?? 'bg-slate-100'}`}>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${reasonColor[r.reason as string] ?? 'bg-slate-100 dark:bg-white/10'}`}>
                       {(r.reason as string).replace('_', ' ')}
                     </span>
                     <Badge variant={r.status === 'RESOLVED' ? 'success' : r.status === 'DISMISSED' ? 'default' : 'warning'}>
@@ -329,8 +329,8 @@ export function AdminReportsPage() {
 
                   {campaign && (
                     <div className="flex items-center gap-1.5 mb-1">
-                      <Target size={12} className="" />
-                      <Link to={`/campaigns/${campaign.slug}`} className="text-xs text-indigo-600 hover:underline">{campaign.title}</Link>
+                      <Target size={12} className="text-slate-400" />
+                      <Link to={`/campaigns/${campaign.slug}`} className="text-xs text-brand-600 hover:underline">{campaign.title}</Link>
                     </div>
                   )}
                   {comment && (
@@ -354,7 +354,7 @@ export function AdminReportsPage() {
                       <CheckCircle size={12} /> Resolve
                     </button>
                     <button onClick={() => handleResolve(r.id as string, 'DISMISSED')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-slate-100 rounded-xl text-xs font-medium transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl text-xs font-medium transition-colors">
                       <XCircle size={12} /> Dismiss
                     </button>
                   </div>
@@ -391,10 +391,10 @@ export function AdminAnalyticsPage() {
   const stats = statsData?.data as Record<string, unknown> | undefined;
 
   const kpis = [
-    { icon: DollarSign, label: 'Total Revenue', value: fmtCurrency(Number(stats?.totalRevenue ?? 0)), delta: '+12.3%', up: true, color: 'bg-indigo-500' },
+    { icon: DollarSign, label: 'Total Revenue', value: fmtCurrency(Number(stats?.totalRevenue ?? 0)), delta: '+12.3%', up: true, color: 'bg-brand-500' },
     { icon: Heart, label: 'Total Donations', value: String(stats?.totalDonations ?? 0), delta: '+8.7%', up: true, color: 'bg-rose-500' },
     { icon: Users, label: 'Total Users', value: String(stats?.totalUsers ?? 0), delta: '+15.1%', up: true, color: 'bg-amber-500' },
-    { icon: Target, label: 'Active Campaigns', value: String(stats?.activeCampaigns ?? 0), delta: '+3', up: true, color: 'bg-violet-500' },
+    { icon: Target, label: 'Active Campaigns', value: String(stats?.activeCampaigns ?? 0), delta: '+3', up: true, color: 'bg-brand-500' },
     { icon: Activity, label: 'Avg. Donation', value: fmtCurrency(Number(stats?.totalRevenue ?? 0) / Math.max(Number(stats?.totalDonations ?? 1), 1)), delta: '+$12', up: true, color: 'bg-emerald-500' },
     { icon: Award, label: 'Success Rate', value: '68%', delta: '+4%', up: true, color: 'bg-sky-500' },
     { icon: TrendingUp, label: 'Conversion', value: '4.2%', delta: '+0.3%', up: true, color: 'bg-pink-500' },
@@ -407,7 +407,7 @@ export function AdminAnalyticsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-bold">Analytics</h2>
-        <p className="text-sm mt-0.5">Platform performance overview</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Platform performance overview</p>
       </div>
 
       {/* KPIs */}
@@ -437,15 +437,15 @@ export function AdminAnalyticsPage() {
             <AreaChart data={MOCK_MONTHLY}>
               <defs>
                 <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={v => `$${v/1000}k`} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip formatter={(v: number) => fmtCurrency(v)} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-              <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2.5} fill="url(#revGrad)" dot={false} activeDot={{ r: 4 }} />
+              <Area type="monotone" dataKey="revenue" stroke="#14b8a6" strokeWidth={2.5} fill="url(#revGrad)" dot={false} activeDot={{ r: 4 }} />
             </AreaChart>
           </ResponsiveContainer>
         </Card>
@@ -455,12 +455,12 @@ export function AdminAnalyticsPage() {
           <p className="text-xs mb-4">Acquisition and engagement correlation</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={MOCK_MONTHLY}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
               <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
-              <Line type="monotone" dataKey="donations" stroke="#6366f1" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="donations" stroke="#14b8a6" strokeWidth={2} dot={false} />
               <Line type="monotone" dataKey="users" stroke="#f59e0b" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -471,11 +471,11 @@ export function AdminAnalyticsPage() {
           <p className="text-xs mb-4">Count of processed transactions per month</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={MOCK_MONTHLY}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-              <Bar dataKey="donations" fill="#6366f1" radius={[5, 5, 0, 0]} />
+              <Bar dataKey="donations" fill="#14b8a6" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -489,7 +489,7 @@ export function AdminAnalyticsPage() {
                 <div key={c.id as string} className="flex items-center gap-3">
                   <span className="text-xs font-bold w-5">#{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-slate-800 truncate">{c.title as string}</p>
+                    <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{c.title as string}</p>
                     <ProgressBar value={Number(c.progressPercent ?? 0)} size="sm" />
                   </div>
                   <div className="text-right flex-shrink-0">
@@ -536,14 +536,14 @@ function CreatorAnalyticsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-bold">My Analytics</h2>
-        <p className="text-sm mt-0.5">Performance across your campaigns only</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Performance across your campaigns only</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Total Raised', value: fmtCurrency(Number(stats.totalRaised ?? 0)), color: 'bg-indigo-500', icon: DollarSign },
+          { label: 'Total Raised', value: fmtCurrency(Number(stats.totalRaised ?? 0)), color: 'bg-brand-500', icon: DollarSign },
           { label: 'Total Donations', value: String(stats.totalDonations ?? 0), color: 'bg-rose-500', icon: Activity },
-          { label: 'Campaigns', value: String((stats.campaigns as unknown[])?.length ?? 0), color: 'bg-violet-500', icon: Target },
+          { label: 'Campaigns', value: String((stats.campaigns as unknown[])?.length ?? 0), color: 'bg-brand-500', icon: Target },
         ].map(({ label, value, color, icon: Icon }) => (
           <Card key={label} className="p-4">
             <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2 ${color}`}>
@@ -560,11 +560,11 @@ function CreatorAnalyticsPage() {
           <h3 className="text-sm font-semibold mb-4">My Monthly Revenue</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={monthly}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={v => `$${v}`} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip formatter={(v: number) => fmtCurrency(v)} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-              <Bar dataKey="revenue" fill="#6366f1" radius={[5, 5, 0, 0]} />
+              <Bar dataKey="revenue" fill="#14b8a6" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -583,11 +583,11 @@ function DonorAnalyticsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-bold">My Giving</h2>
-        <p className="text-sm mt-0.5">Your personal donation history</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Your personal donation history</p>
       </div>
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total Donated', value: fmtCurrency(Number(stats.totalDonated ?? 0)), color: 'bg-indigo-500', icon: DollarSign },
+          { label: 'Total Donated', value: fmtCurrency(Number(stats.totalDonated ?? 0)), color: 'bg-brand-500', icon: DollarSign },
           { label: 'Donations Made', value: String(stats.totalDonations ?? 0), color: 'bg-rose-500', icon: Activity },
           { label: 'Campaigns Backed', value: String(stats.supportedCampaigns ?? 0), color: 'bg-emerald-500', icon: Target },
         ].map(({ label, value, color, icon: Icon }) => (

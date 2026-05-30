@@ -21,74 +21,74 @@ function StatCard({ icon: Icon, label, value, delta, deltaUp, accent }: {
   delta?: string; deltaUp?: boolean; accent: string;
 }) {
   return (
-    <Card className="p-5">
-      <div className="flex items-center justify-between mb-3">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${accent}`}>
-          <Icon size={18} className="text-white" />
+    <Card hover className="p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-sm bg-gradient-to-br ${accent}`}>
+          <Icon size={19} className="text-white" />
         </div>
         {delta && (
-          <span className={`flex items-center gap-0.5 text-xs font-medium ${deltaUp ? 'text-emerald-600' : 'text-red-500'}`}>
+          <span className={`flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full ${deltaUp ? 'text-emerald-700 bg-emerald-50' : 'text-rose-600 bg-rose-50'}`}>
             <ArrowUpRight size={12} className={!deltaUp ? 'rotate-180' : ''} />
             {delta}
           </span>
         )}
       </div>
-      <p className="text-xl font-bold">{value}</p>
-      <p className="text-xs mt-0.5">{label}</p>
+      <p className="text-2xl font-display font-bold text-navy-900 dark:text-slate-100 tnum leading-none">{value}</p>
+      <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{label}</p>
     </Card>
   );
 }
 
 // ── Campaign row ──────────────────────────────
 function CampaignRow({ campaign, onDelete }: { campaign: Campaign; onDelete?: (id: string) => void }) {
-  const statusVariant: Record<string, 'success' | 'info' | 'default' | 'warning' | 'danger'> = {
+  const statusVariant: Record<string, 'success' | 'info' | 'default' | 'warning' | 'danger' | 'purple'> = {
     ACTIVE: 'success', COMPLETED: 'info', DRAFT: 'default',
     PAUSED: 'warning', CANCELLED: 'danger', PENDING_REVIEW: 'purple',
   };
   return (
-    <tr className="hover:bg-slate-50 transition-colors">
+    <tr className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
       <td className="px-5 py-3.5">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 flex-shrink-0 overflow-hidden">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy-100 to-navy-200 flex-shrink-0 overflow-hidden ring-1 ring-navy-900/5">
             {campaign.coverImageUrl ? (
               <img src={campaign.coverImageUrl} alt={campaign.title} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center"><Target size={14} className="" /></div>
+              <div className="w-full h-full flex items-center justify-center text-navy-300"><Target size={14} /></div>
             )}
           </div>
           <div>
-            <p className="text-sm font-medium flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-navy-900 dark:text-slate-100 flex items-center gap-1.5">
               {campaign.title.length > 32 ? campaign.title.slice(0, 32) + '…' : campaign.title}
               {campaign.isFeatured && <Star size={11} className="text-amber-400 fill-amber-400" />}
             </p>
-            <p className="text-xs">{campaign.category.name}</p>
+            <p className="text-xs text-slate-400">{campaign.category.name}</p>
           </div>
         </div>
       </td>
       <td className="px-5 py-3.5">
         <div className="w-28">
-          <div className="flex justify-between text-xs mb-1">
-            <span className="">{campaign.progressPercent}%</span>
+          <div className="flex justify-between text-xs mb-1.5">
+            <span className="font-semibold text-navy-700 dark:text-slate-300 tnum">{campaign.progressPercent}%</span>
           </div>
-          <ProgressBar value={campaign.progressPercent} size="sm" />
+          <ProgressBar value={campaign.progressPercent} size="sm" color={campaign.status === 'COMPLETED' ? 'emerald' : 'brand'} />
         </div>
       </td>
       <td className="px-5 py-3.5">
-        <p className="text-sm font-semibold">${campaign.raisedAmount.toLocaleString()}</p>
-        <p className="text-xs">of ${campaign.goalAmount.toLocaleString()}</p>
+        <p className="text-sm font-bold text-navy-900 dark:text-slate-100 tnum">${campaign.raisedAmount.toLocaleString()}</p>
+        <p className="text-xs text-slate-400 tnum">of ${campaign.goalAmount.toLocaleString()}</p>
       </td>
       <td className="px-5 py-3.5">
-        <span className="text-sm">{campaign.donorsCount}</span>
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-300 tnum">{campaign.donorsCount}</span>
       </td>
       <td className="px-5 py-3.5">
         <Badge variant={statusVariant[campaign.status] ?? 'default'}>{campaign.status}</Badge>
       </td>
       <td className="px-5 py-3.5">
         <div className="flex items-center gap-1.5">
-          <Link to={`/campaigns/${campaign.slug}`} className="p-1.5 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"><Eye size={13} /></Link>
+          <Link to={`/campaigns/${campaign.slug}`} className="p-1.5 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"><Eye size={13} /></Link>
           <Link to={`/dashboard/campaigns/${campaign.id}/edit`} className="p-1.5 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"><Edit3 size={13} /></Link>
           {onDelete && (
-            <button onClick={() => onDelete(campaign.id)} className="p-1.5 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+            <button onClick={() => onDelete(campaign.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
             </button>
           )}
@@ -105,15 +105,15 @@ function AdminDashboard() {
   const stats = data?.data as AdminStats | undefined;
   if (!stats) return null;
 
-  const categoryColors = ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
+  const categoryColors = ['#14b8a6', '#f59e0b', '#10b981', '#ef4444', '#2b4e80'];
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={DollarSign} label="Total Revenue" value={`$${Number(stats.totalRevenue).toLocaleString()}`} delta="12.3%" deltaUp accent="bg-indigo-500" />
-        <StatCard icon={Target} label="Active Campaigns" value={String(stats.activeCampaigns)} delta="3 new" deltaUp accent="bg-violet-500" />
-        <StatCard icon={Users} label="Total Users" value={stats.totalUsers.toLocaleString()} delta="8.7%" deltaUp accent="bg-amber-500" />
-        <StatCard icon={Heart} label="Total Donations" value={stats.totalDonations.toLocaleString()} delta="5.2%" deltaUp accent="bg-rose-500" />
+        <StatCard icon={DollarSign} label="Total Revenue" value={`$${Number(stats.totalRevenue).toLocaleString()}`} delta="12.3%" deltaUp accent="from-brand-500 to-brand-600" />
+        <StatCard icon={Target} label="Active Campaigns" value={String(stats.activeCampaigns)} delta="3 new" deltaUp accent="from-brand-500 to-brand-600" />
+        <StatCard icon={Users} label="Total Users" value={stats.totalUsers.toLocaleString()} delta="8.7%" deltaUp accent="from-amber-400 to-amber-500" />
+        <StatCard icon={Heart} label="Total Donations" value={stats.totalDonations.toLocaleString()} delta="5.2%" deltaUp accent="from-rose-500 to-rose-600" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
@@ -123,15 +123,15 @@ function AdminDashboard() {
             <AreaChart data={stats.topCampaigns.map((c, i) => ({ name: c.title?.slice(0, 12), value: Number(c.raisedAmount) }))}>
               <defs>
                 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.18} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.18} />
+                  <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-              <Area type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={2} fill="url(#g1)" dot={false} />
+              <Area type="monotone" dataKey="value" stroke="#14b8a6" strokeWidth={2} fill="url(#g1)" dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </Card>
@@ -151,9 +151,9 @@ function AdminDashboard() {
               <div key={s.status} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full" style={{ background: categoryColors[i % 5] }} />
-                  <span className="">{s.status}</span>
+                  <span className="text-slate-500 dark:text-slate-400">{s.status}</span>
                 </div>
-                <span className="font-medium">{s._count.id}</span>
+                <span className="font-semibold text-navy-800 dark:text-slate-200 tnum">{s._count.id}</span>
               </div>
             ))}
           </div>
@@ -162,21 +162,21 @@ function AdminDashboard() {
 
       {/* Recent donations */}
       <Card className="overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 dark:border-white/10">
           <h3 className="text-sm font-semibold">Recent Donations</h3>
           <span className="flex items-center gap-1 text-xs text-emerald-600">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live
           </span>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 dark:divide-white/10">
           {stats.recentDonations.slice(0, 8).map((d: Donation) => (
             <div key={d.id} className="flex items-center gap-3 px-5 py-3">
               <Avatar name={d.isAnonymous ? 'Anon' : `${(d as unknown as { donor?: { user?: { firstName?: string; lastName?: string } } }).donor?.user?.firstName ?? 'User'} ${(d as unknown as { donor?: { user?: { firstName?: string; lastName?: string } } }).donor?.user?.lastName ?? ''}`} size="sm" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-slate-800">{d.isAnonymous ? 'Anonymous' : 'Donor'}</p>
-                <p className="text-[11px] truncate">{d.campaign?.title}</p>
+                <p className="text-xs font-semibold text-navy-800 dark:text-slate-200">{d.isAnonymous ? 'Anonymous' : 'Donor'}</p>
+                <p className="text-[11px] text-slate-400 truncate">{d.campaign?.title}</p>
               </div>
-              <span className="text-xs font-bold text-emerald-600">${Number(d.amount).toLocaleString()}</span>
+              <span className="text-sm font-bold text-brand-600 tnum">${Number(d.amount).toLocaleString()}</span>
             </div>
           ))}
         </div>
@@ -195,10 +195,10 @@ function CreatorDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={DollarSign} label="Total Raised" value={`$${Number(stats.totalRaised).toLocaleString()}`} accent="bg-indigo-500" />
-        <StatCard icon={Heart} label="Total Donations" value={stats.totalDonations.toLocaleString()} accent="bg-rose-500" />
-        <StatCard icon={Target} label="Campaigns" value={String(stats.campaigns.length)} accent="bg-violet-500" />
-        <StatCard icon={Activity} label="Active" value={String(stats.campaigns.filter((c: Campaign) => c.status === 'ACTIVE').length)} accent="bg-emerald-500" />
+        <StatCard icon={DollarSign} label="Total Raised" value={`$${Number(stats.totalRaised).toLocaleString()}`} accent="from-brand-500 to-brand-600" />
+        <StatCard icon={Heart} label="Total Donations" value={stats.totalDonations.toLocaleString()} accent="from-rose-500 to-rose-600" />
+        <StatCard icon={Target} label="Campaigns" value={String(stats.campaigns.length)} accent="from-brand-500 to-brand-600" />
+        <StatCard icon={Activity} label="Active" value={String(stats.campaigns.filter((c: Campaign) => c.status === 'ACTIVE').length)} accent="from-emerald-500 to-emerald-600" />
       </div>
 
       {stats.monthlyRevenue.length > 0 && (
@@ -206,18 +206,18 @@ function CreatorDashboard() {
           <h3 className="text-sm font-semibold mb-4">Monthly Revenue</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={stats.monthlyRevenue}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-              <Bar dataKey="revenue" fill="#6366f1" radius={[5, 5, 0, 0]} />
+              <Bar dataKey="revenue" fill="#14b8a6" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
       )}
 
       <Card className="overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 dark:border-white/10">
           <h3 className="text-sm font-semibold">My Campaigns</h3>
           <Link to="/dashboard/campaigns/new">
             <Button size="sm" leftIcon={<Plus size={13} />}>New Campaign</Button>
@@ -228,12 +228,12 @@ function CreatorDashboard() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="bg-slate-50/50 border-b">
+              <thead><tr className="bg-slate-50/70 dark:bg-white/5 border-b border-slate-100 dark:border-white/10">
                 {['Campaign', 'Progress', 'Raised', 'Donors', 'Status', ''].map(h => (
-                  <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3">{h}</th>
+                  <th key={h} className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-5 py-3">{h}</th>
                 ))}
               </tr></thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/10">
                 {stats.campaigns.map((c: Campaign) => <CampaignRow key={c.id} campaign={c} />)}
               </tbody>
             </table>
@@ -254,42 +254,42 @@ function DonorDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-3 gap-4">
-        <StatCard icon={DollarSign} label="Total Donated" value={`$${Number(stats.totalDonated).toLocaleString()}`} accent="bg-indigo-500" />
-        <StatCard icon={Heart} label="Donations Made" value={String(stats.totalDonations)} accent="bg-rose-500" />
-        <StatCard icon={Target} label="Campaigns Backed" value={String(stats.supportedCampaigns)} accent="bg-emerald-500" />
+        <StatCard icon={DollarSign} label="Total Donated" value={`$${Number(stats.totalDonated).toLocaleString()}`} accent="from-brand-500 to-brand-600" />
+        <StatCard icon={Heart} label="Donations Made" value={String(stats.totalDonations)} accent="from-rose-500 to-rose-600" />
+        <StatCard icon={Target} label="Campaigns Backed" value={String(stats.supportedCampaigns)} accent="from-emerald-500 to-emerald-600" />
       </div>
 
       <Card className="overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-50">
+        <div className="px-5 py-4 border-b border-slate-50 dark:border-white/10">
           <h3 className="text-sm font-semibold">Donation History</h3>
         </div>
         {stats.donations.length === 0 ? (
           <EmptyState icon={<Heart size={36} />} title="No donations yet" description="Explore campaigns and make your first contribution" action={<Link to="/campaigns"><Button size="sm" variant="secondary">Browse campaigns</Button></Link>} />
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-white/10">
             {stats.donations.map((d: Donation) => {
               const statusIcon = d.status === 'COMPLETED' ? <CheckCircle size={14} className="text-emerald-500" /> :
                 d.status === 'PENDING' ? <Clock size={14} className="text-amber-500" /> :
                 <AlertCircle size={14} className="text-red-500" />;
               return (
                 <div key={d.id} className="flex items-center gap-4 px-5 py-4">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 flex-shrink-0 overflow-hidden">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-navy-100 to-navy-200 flex-shrink-0 overflow-hidden ring-1 ring-navy-900/5">
                     {d.campaign?.coverImageUrl ? (
                       <img src={d.campaign.coverImageUrl} alt="" className="w-full h-full object-cover" />
-                    ) : <div className="w-full h-full flex items-center justify-center"><Target size={14} className="" /></div>}
+                    ) : <div className="w-full h-full flex items-center justify-center text-navy-300"><Target size={14} /></div>}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link to={`/campaigns/${d.campaign?.slug}`} className="text-sm font-medium hover:text-indigo-600 transition-colors truncate block">
+                    <Link to={`/campaigns/${d.campaign?.slug}`} className="text-sm font-semibold text-navy-900 dark:text-slate-100 hover:text-brand-600 transition-colors truncate block">
                       {d.campaign?.title}
                     </Link>
-                    {d.reward && <p className="text-xs text-indigo-600 mt-0.5">Reward: {d.reward.title}</p>}
-                    {d.message && <p className="text-xs italic mt-0.5 truncate">"{d.message}"</p>}
+                    {d.reward && <p className="text-xs text-brand-600 mt-0.5">Reward: {d.reward.title}</p>}
+                    {d.message && <p className="text-xs text-slate-400 italic mt-0.5 truncate">"{d.message}"</p>}
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold">${Number(d.amount).toLocaleString()}</p>
+                    <p className="text-sm font-bold text-navy-900 dark:text-slate-100 tnum">${Number(d.amount).toLocaleString()}</p>
                     <div className="flex items-center gap-1 justify-end mt-0.5">
                       {statusIcon}
-                      <span className="text-xs">{new Date(d.createdAt).toLocaleDateString()}</span>
+                      <span className="text-xs text-slate-400">{new Date(d.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
@@ -317,9 +317,9 @@ export function DashboardOverviewPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-xl font-bold">{greeting}, {name} 👋</h1>
-        <p className="text-sm mt-0.5">Here's what's happening on your platform</p>
+      <div className="mb-7">
+        <h1 className="text-2xl font-display font-extrabold text-navy-900 dark:text-slate-100">{greeting}, {name} 👋</h1>
+        <p className="text-[15px] text-slate-500 dark:text-slate-400 mt-1">Here's what's happening on your platform today.</p>
       </div>
       {user?.roles.includes('ADMIN') && <AdminDashboard />}
       {!user?.roles.includes('ADMIN') && user?.roles.includes('CREATOR') && <CreatorDashboard />}
@@ -350,8 +350,8 @@ export function DashboardCampaignsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold">Campaigns</h2>
-          <p className="text-sm mt-0.5">{campaigns.length} total</p>
+          <h2 className="text-2xl font-display font-extrabold text-navy-900 dark:text-slate-100">Campaigns</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{campaigns.length} total</p>
         </div>
         {user?.roles.includes('CREATOR') && (
           <Button leftIcon={<Plus size={14} />} onClick={() => navigate('/dashboard/campaigns/new')}>
@@ -370,12 +370,12 @@ export function DashboardCampaignsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="bg-slate-50/50 border-b">
+              <thead><tr className="bg-slate-50/70 dark:bg-white/5 border-b border-slate-100 dark:border-white/10">
                 {['Campaign', 'Progress', 'Raised', 'Donors', 'Status', ''].map(h => (
-                  <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3">{h}</th>
+                  <th key={h} className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-5 py-3">{h}</th>
                 ))}
               </tr></thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/10">
                 {campaigns.map(c => <CampaignRow key={c.id} campaign={c} onDelete={handleDelete} />)}
               </tbody>
             </table>
@@ -392,30 +392,30 @@ export function DashboardSettingsPage() {
   return (
     <div className="max-w-lg space-y-6">
       <div>
-        <h2 className="text-lg font-bold">Settings</h2>
-        <p className="text-sm mt-0.5">Manage your account preferences</p>
+        <h2 className="text-2xl font-display font-extrabold text-navy-900 dark:text-slate-100">Settings</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage your account preferences</p>
       </div>
-      <Card className="p-5">
+      <Card className="p-6">
         <h3 className="text-sm font-semibold mb-4">Profile</h3>
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-4 mb-5">
           <Avatar name={`${user?.firstName} ${user?.lastName}`} size="lg" />
           <Button variant="outline" size="sm">Change avatar</Button>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium mb-1.5">First name</label>
-            <input defaultValue={user?.firstName} className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            <label className="block text-[13px] font-semibold text-navy-800 dark:text-slate-200 mb-1.5">First name</label>
+            <input defaultValue={user?.firstName} className="w-full px-3.5 py-2.5 bg-white dark:bg-navy-950/60 border border-slate-200 dark:border-white/10 rounded-xl text-sm text-navy-900 dark:text-slate-100 shadow-inner-soft focus:outline-none focus:ring-4 focus:ring-brand-100 focus:border-brand-400 transition-all" />
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1.5">Last name</label>
-            <input defaultValue={user?.lastName} className="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            <label className="block text-[13px] font-semibold text-navy-800 dark:text-slate-200 mb-1.5">Last name</label>
+            <input defaultValue={user?.lastName} className="w-full px-3.5 py-2.5 bg-white dark:bg-navy-950/60 border border-slate-200 dark:border-white/10 rounded-xl text-sm text-navy-900 dark:text-slate-100 shadow-inner-soft focus:outline-none focus:ring-4 focus:ring-brand-100 focus:border-brand-400 transition-all" />
           </div>
         </div>
         <div className="mt-3">
-          <label className="block text-xs font-medium mb-1.5">Email</label>
-          <input defaultValue={user?.email} disabled className="w-full px-3 py-2 border rounded-xl text-sm" />
+          <label className="block text-[13px] font-semibold text-navy-800 dark:text-slate-200 mb-1.5">Email</label>
+          <input defaultValue={user?.email} disabled className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm text-slate-500 dark:text-slate-400 cursor-not-allowed" />
         </div>
-        <Button className="mt-4" size="sm">Save changes</Button>
+        <Button className="mt-5" size="sm">Save changes</Button>
       </Card>
 
       <Card className="p-5">
