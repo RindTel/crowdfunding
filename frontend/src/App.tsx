@@ -66,11 +66,12 @@ export default function App() {
         toastOptions={{
           duration: 3500,
           style: {
-            background: '#1e2030', color: '#e2e8f0', fontSize: '13px',
-            borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)',
+            background: '#0e1c33', color: '#e2e8f0', fontSize: '13px',
+            borderRadius: '14px', border: '1px solid rgba(255,255,255,0.07)',
+            boxShadow: '0 12px 32px -10px rgba(7,15,31,0.5)', padding: '10px 14px',
           },
-          success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
-          error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+          success: { iconTheme: { primary: '#14b8a6', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#f43f5e', secondary: '#fff' } },
         }}
       />
     </QueryClientProvider>

@@ -2,12 +2,29 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate, Outlet } from 'react-router-dom';
 import {
   Flame, LayoutDashboard, Target, DollarSign, Users,
-  BarChart2, Settings, LogOut, Bell, Search, Menu,
-  ChevronRight, X, Layers, Globe, Heart, Flag, Sun, Moon
+  BarChart2, Settings, LogOut, Search, Menu,
+  ChevronRight, X, Layers, Globe, Heart, Flag, Plus, Sun, Moon
 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth.store';
+import { useThemeStore } from '../../store/theme.store';
 import { Avatar } from '../../components/ui';
+import { NotificationBell } from './NotificationBell';
 import toast from 'react-hot-toast';
+
+// ── Theme toggle ──────────────────────────────
+function ThemeToggle() {
+  const { isDark, toggle } = useThemeStore();
+  return (
+    <button
+      onClick={toggle}
+      className="p-2.5 text-slate-500 hover:text-navy-700 hover:bg-slate-100 rounded-xl transition-colors dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10"
+      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label="Toggle theme"
+    >
+      {isDark ? <Sun size={17} /> : <Moon size={17} />}
+    </button>
+  );
+}
 
 // ── Nav config ────────────────────────────────
 interface NavItem { to: string; label: string; icon: React.ElementType; roles?: string[] }
@@ -35,6 +52,18 @@ const donorNav: NavItem[] = [
   { to: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 
+// ── Brand mark ────────────────────────────────
+function BrandMark({ size = 32 }: { size?: number }) {
+  return (
+    <div
+      className="rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center flex-shrink-0 shadow-glow-sm"
+      style={{ width: size, height: size }}
+    >
+      <Flame size={size * 0.46} className="text-white" />
+    </div>
+  );
+}
+
 // ── Sidebar ───────────────────────────────────
 function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: () => void }) {
   const { user, logout } = useAuthStore();
@@ -53,20 +82,18 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0f1117]">
+    <div className="flex flex-col h-full bg-navy-950 bg-gradient-to-b from-navy-900 to-navy-950">
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 h-16 border-b border-white/5 flex-shrink-0 ${collapsed ? 'justify-center' : ''}`}>
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-900/40">
-          <Flame size={15} className="text-white" />
-        </div>
+        <BrandMark size={32} />
         {!collapsed && (
-          <div>
-            <span className="text-white font-bold text-[15px] tracking-tight">FundForge</span>
-            <div className="text-[10px] -mt-0.5 uppercase tracking-widest">Platform</div>
+          <div className="leading-none">
+            <span className="text-white font-display font-bold text-[15px] tracking-tight">FundForge</span>
+            <div className="text-[10px] mt-1 uppercase tracking-[0.18em] text-brand-400/80 font-semibold">Platform</div>
           </div>
         )}
         {onClose && (
-          <button onClick={onClose} className="ml-auto hover:text-white lg:hidden">
+          <button onClick={onClose} className="ml-auto text-slate-400 hover:text-white lg:hidden">
             <X size={16} />
           </button>
         )}
@@ -75,7 +102,7 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
       {/* Role pill */}
       {!collapsed && user && (
         <div className="px-4 pt-4 pb-2">
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-300 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">
             <Layers size={9} />
             {user.roles.includes('ADMIN') ? 'Admin' : user.roles.includes('CREATOR') ? 'Creator' : 'Donor'}
           </span>
@@ -83,7 +110,7 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
       )}
 
       {/* Nav */}
-      <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-2.5 py-2 space-y-0.5 overflow-y-auto">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
@@ -91,11 +118,11 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
             end={to === '/dashboard'}
             onClick={onClose}
             className={({ isActive }) => [
-              'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150',
+              'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
               collapsed ? 'justify-center' : '',
               isActive
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30'
-                : 'text-slate-500 hover:text-white hover:bg-white/5',
+                ? 'bg-brand-600 text-white shadow-glow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-white/5',
             ].join(' ')}
             title={collapsed ? label : undefined}
           >
@@ -105,12 +132,12 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
         ))}
 
         {/* Explore campaigns link */}
-        <div className={`pt-3 ${collapsed ? '' : 'px-1'}`}>
-          {!collapsed && <p className="text-[10px] font-semibold uppercase tracking-widest px-2 mb-1.5">Explore</p>}
+        <div className={`pt-4 mt-2 border-t border-white/5 ${collapsed ? '' : 'px-1'}`}>
+          {!collapsed && <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 px-2 mb-1.5">Explore</p>}
           <Link
             to="/campaigns"
             onClick={onClose}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium hover:text-white hover:bg-white/5 transition-all ${collapsed ? 'justify-center' : ''}`}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all ${collapsed ? 'justify-center' : ''}`}
           >
             <Globe size={16} className="flex-shrink-0" />
             {!collapsed && 'Browse Campaigns'}
@@ -126,8 +153,8 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
           <div className="flex items-center gap-3">
             <Avatar name={`${user?.firstName} ${user?.lastName}`} src={user?.avatarUrl} />
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium text-white truncate">{user?.firstName} {user?.lastName}</p>
-              <p className="text-[11px] truncate">{user?.email}</p>
+              <p className="text-[13px] font-semibold text-white truncate">{user?.firstName} {user?.lastName}</p>
+              <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
             </div>
             <button onClick={handleLogout} className="text-slate-500 hover:text-rose-400 transition-colors" title="Log out">
               <LogOut size={15} />
@@ -148,22 +175,22 @@ export function AppShell() {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Desktop sidebar */}
-      <aside className={`hidden lg:flex flex-col flex-shrink-0 transition-all duration-300 ${collapsed ? 'w-[68px]' : 'w-[220px]'} relative`}>
+      <aside className={`hidden lg:flex flex-col flex-shrink-0 transition-all duration-300 ease-premium ${collapsed ? 'w-[68px]' : 'w-[232px]'} relative`}>
         <SidebarContent collapsed={collapsed} />
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="absolute -right-3 top-[72px] w-6 h-6 bg-slate-700 hover:bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-md transition-colors z-10"
+          className="absolute -right-3 top-[72px] w-6 h-6 bg-navy-700 hover:bg-brand-600 rounded-full flex items-center justify-center text-white shadow-md transition-colors z-10 ring-2 ring-slate-50"
         >
-          <ChevronRight size={11} className={`transition-transform ${collapsed ? '' : 'rotate-180'}`} />
+          <ChevronRight size={11} className={`transition-transform duration-300 ${collapsed ? '' : 'rotate-180'}`} />
         </button>
       </aside>
 
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <aside className="relative w-[220px] h-full">
+          <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-sm animate-fade-in" onClick={() => setMobileOpen(false)} />
+          <aside className="relative w-[232px] h-full animate-fade-in">
             <SidebarContent collapsed={false} onClose={() => setMobileOpen(false)} />
           </aside>
         </div>
@@ -172,36 +199,39 @@ export function AppShell() {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar */}
-        <header className="h-16 flex items-center justify-between px-5 flex-shrink-0">
+        <header className="h-16 flex items-center justify-between px-5 flex-shrink-0 border-b border-slate-200/70 bg-white/70 backdrop-blur-xl z-20 dark:bg-navy-900/70 dark:border-white/10">
           <div className="flex items-center gap-3">
-            <button className="lg:hidden p-2 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors" onClick={() => setMobileOpen(true)}>
+            <button className="lg:hidden p-2 text-slate-500 hover:text-navy-700 hover:bg-slate-100 rounded-xl transition-colors dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10" onClick={() => setMobileOpen(true)}>
               <Menu size={18} />
             </button>
             <div className="relative hidden sm:block">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
-                className="bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-sm pl-9 pr-4 py-2 w-52"
+                className="bg-slate-100/70 border border-transparent focus:border-brand-300 focus:bg-white text-navy-900 placeholder:text-slate-400 rounded-xl text-sm pl-9 pr-4 py-2 w-56 focus:outline-none focus:ring-4 focus:ring-brand-100 transition-all dark:bg-white/5 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-white/10 dark:focus:ring-brand-500/20"
                 placeholder="Search campaigns…"
               />
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
-            
-            <button className="relative p-2.5 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
-              <Bell size={17} />
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-            </button>
-            <div className="h-6 w-px bg-slate-200" />
-            <Link to="/dashboard/settings">
+            <Link
+              to="/dashboard/campaigns/new"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-[13px] font-semibold shadow-glow-sm hover:shadow-glow transition-all"
+            >
+              <Plus size={15} /> New campaign
+            </Link>
+            <ThemeToggle />
+            <NotificationBell />
+            <div className="h-6 w-px bg-slate-200 dark:bg-white/10" />
+            <Link to="/dashboard/settings" className="hover:opacity-80 transition-opacity">
               <Avatar name={`${user?.firstName} ${user?.lastName}`} src={user?.avatarUrl} size="sm" />
             </Link>
           </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-6 max-w-[1400px] mx-auto">
+        <main className="flex-1 overflow-y-auto bg-slate-50/40 dark:bg-navy-950 dark:text-slate-200 transition-colors">
+          <div className="p-6 lg:p-8 max-w-[1400px] mx-auto animate-fade-in">
             <Outlet />
           </div>
         </main>
@@ -217,28 +247,26 @@ export function PublicLayout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="h-16 flex-shrink-0">
+      <header className="h-16 flex-shrink-0 sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/70 dark:bg-navy-900/70 dark:border-white/10">
         <div className="max-w-7xl mx-auto px-5 h-full flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-              <Flame size={15} className="text-white" />
-            </div>
-            <span className="font-bold text-[15px]">FundForge</span>
+            <BrandMark size={32} />
+            <span className="font-display font-bold text-[15px] text-navy-900 dark:text-slate-100">FundForge</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/campaigns" className="text-sm hover:text-slate-900 transition-colors font-medium">Explore</Link>
-            <Link to="/how-it-works" className="text-sm hover:text-slate-900 transition-colors font-medium">How it works</Link>
+          <nav className="hidden md:flex items-center gap-7">
+            <Link to="/campaigns" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white transition-colors font-medium">Explore</Link>
+            <Link to="/how-it-works" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white transition-colors font-medium">How it works</Link>
           </nav>
           <div className="flex items-center gap-3">
-            
+            <ThemeToggle />
             {isAuthenticated ? (
-              <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 shadow-glow-sm hover:shadow-glow transition-all">
                 Dashboard
               </button>
             ) : (
               <>
-                <Link to="/login" className="text-sm hover:text-slate-900 font-medium transition-colors">Sign in</Link>
-                <Link to="/register" className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors">Get started</Link>
+                <Link to="/login" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white font-medium transition-colors">Sign in</Link>
+                <Link to="/register" className="px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 shadow-glow-sm hover:shadow-glow transition-all">Get started</Link>
               </>
             )}
           </div>
@@ -247,9 +275,9 @@ export function PublicLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="py-8">
-        <div className="max-w-7xl mx-auto px-5 text-center text-sm">
-          © {new Date().getFullYear()} FundForge. Built with ❤️ for changemakers.
+      <footer className="border-t border-slate-200/70 py-8 bg-white/40 dark:bg-navy-900/40 dark:border-white/10">
+        <div className="max-w-7xl mx-auto px-5 text-center text-sm text-slate-500 dark:text-slate-400">
+          © {new Date().getFullYear()} FundForge. Built with <span className="text-brand-500">♥</span> for changemakers.
         </div>
       </footer>
     </div>
@@ -273,18 +301,4 @@ export function ProtectedRoute({ roles }: { roles?: string[] }) {
 
   if (!isAuthenticated) return null;
   return <Outlet />;
-}
-
-// ── Theme Toggle ──────────────────────────────
-function ThemeToggle() {
-  const { isDark, toggle } = useThemeStore();
-  return (
-    <button
-      onClick={toggle}
-      className="p-2.5 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
-      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      {isDark ? <Sun size={17} /> : <Moon size={17} />}
-    </button>
-  );
 }
