@@ -15,16 +15,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary:   'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-200 active:bg-indigo-800',
-  secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300',
-  ghost:     'text-slate-600 hover:bg-slate-100 active:bg-slate-200',
-  danger:    'bg-red-600 text-white hover:bg-red-700 shadow-sm shadow-red-200',
-  outline:   'border border-slate-300 text-slate-700 hover:bg-slate-50 active:bg-slate-100',
+  primary:   'bg-brand-600 text-white hover:bg-brand-700 shadow-glow-sm hover:shadow-glow active:scale-[0.98]',
+  secondary: 'bg-navy-50 text-navy-800 hover:bg-navy-100 active:bg-navy-200/70 border border-navy-100 dark:bg-white/5 dark:text-slate-200 dark:border-white/10 dark:hover:bg-white/10',
+  ghost:     'text-slate-600 hover:bg-slate-100 hover:text-navy-900 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white',
+  danger:    'bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-200 active:scale-[0.98]',
+  outline:   'border border-slate-300 text-navy-700 bg-white hover:bg-slate-50 hover:border-slate-400 active:bg-slate-100 dark:bg-transparent dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/5',
 };
 const sizeStyles: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5 text-xs gap-1.5 rounded-lg',
   md: 'px-4 py-2 text-sm gap-2 rounded-xl',
-  lg: 'px-6 py-3 text-base gap-2.5 rounded-xl',
+  lg: 'px-6 py-3 text-[15px] gap-2.5 rounded-xl',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
@@ -35,7 +35,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     ref={ref}
     disabled={disabled || loading}
     className={[
-      'inline-flex items-center justify-center font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed select-none',
+      'inline-flex items-center justify-center font-semibold transition-all duration-200 ease-premium',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2',
+      'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 select-none',
       variantStyles[variant],
       sizeStyles[size],
       fullWidth ? 'w-full' : '',
@@ -49,6 +51,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   </button>
 ));
 Button.displayName = 'Button';
+
+// ── Shared field styling ──────────────────────
+const fieldBase = [
+  'block w-full rounded-xl border border-slate-200 bg-white text-sm text-navy-900 transition-all duration-150',
+  'placeholder:text-slate-400 shadow-inner-soft',
+  'focus:outline-none focus:ring-4 focus:ring-brand-100 focus:border-brand-400',
+  'dark:bg-navy-950/60 dark:border-white/10 dark:text-slate-100 dark:placeholder:text-slate-500',
+  'dark:focus:ring-brand-500/20 dark:focus:border-brand-500',
+].join(' ');
 
 // ── Input ─────────────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -64,29 +75,27 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
 }, ref) => (
   <div className="w-full">
     {label && (
-      <label className="block text-sm font-medium text-slate-700 mb-1.5">
+      <label className="block text-[13px] font-semibold text-navy-800 mb-1.5">
         {label}
-        {props.required && <span className="text-red-500 ml-0.5">*</span>}
+        {props.required && <span className="text-brand-500 ml-0.5">*</span>}
       </label>
     )}
     <div className="relative">
       {leftAddon && (
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
           {leftAddon}
         </div>
       )}
       <input
         ref={ref}
         className={[
-          'block w-full rounded-xl border text-sm transition-all duration-150',
-          'focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400',
-          error ? 'border-red-400 focus:ring-red-400' : '',
+          fieldBase,
+          error ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : '',
           leftAddon ? 'pl-10' : 'pl-3.5',
           rightAddon ? 'pr-10' : 'pr-3.5',
           'py-2.5',
           className,
         ].join(' ')}
-     
         {...props}
       />
       {rightAddon && (
@@ -95,7 +104,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         </div>
       )}
     </div>
-    {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
+    {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
     {hint && !error && <p className="mt-1.5 text-xs text-slate-500">{hint}</p>}
   </div>
 ));
@@ -113,24 +122,21 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
 }, ref) => (
   <div className="w-full">
     {label && (
-      <label className="block text-sm font-medium text-slate-700 mb-1.5">
+      <label className="block text-[13px] font-semibold text-navy-800 mb-1.5">
         {label}
-        {props.required && <span className="text-red-500 ml-0.5">*</span>}
+        {props.required && <span className="text-brand-500 ml-0.5">*</span>}
       </label>
     )}
     <textarea
       ref={ref}
       className={[
-        'block w-full rounded-xl border text-sm transition-all duration-150 resize-none',
-        'focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400',
-        error ? 'border-red-400' : '',
-        'px-3.5 py-2.5',
+        fieldBase, 'resize-none px-3.5 py-2.5',
+        error ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : '',
         className,
       ].join(' ')}
-     
       {...props}
     />
-    {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
+    {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
     {hint && !error && <p className="mt-1.5 text-xs text-slate-500">{hint}</p>}
   </div>
 ));
@@ -148,28 +154,30 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
 }, ref) => (
   <div className="w-full">
     {label && (
-      <label className="block text-sm font-medium text-slate-700 mb-1.5">
+      <label className="block text-[13px] font-semibold text-navy-800 mb-1.5">
         {label}
-        {props.required && <span className="text-red-500 ml-0.5">*</span>}
+        {props.required && <span className="text-brand-500 ml-0.5">*</span>}
       </label>
     )}
     <select
       ref={ref}
       className={[
-        'block w-full rounded-xl border text-sm transition-all duration-150',
-        'focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400',
-        error ? 'border-red-400' : '',
-        'px-3.5 py-2.5',
+        fieldBase, 'px-3.5 py-2.5 cursor-pointer appearance-none bg-no-repeat',
+        error ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : '',
         className,
       ].join(' ')}
-     
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+        backgroundPosition: 'right 0.85rem center',
+        paddingRight: '2.25rem',
+      }}
       {...props}
     >
       {options.map(opt => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>
-    {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
+    {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
   </div>
 ));
 Select.displayName = 'Select';
@@ -178,19 +186,19 @@ Select.displayName = 'Select';
 type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'purple';
 
 const badgeVariants: Record<BadgeVariant, string> = {
-  default: 'bg-slate-100 text-slate-600 border-slate-200',
-  success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  warning: 'bg-amber-50 text-amber-700 border-amber-200',
-  danger:  'bg-red-50 text-red-600 border-red-200',
-  info:    'bg-blue-50 text-blue-700 border-blue-200',
-  purple:  'bg-violet-50 text-violet-700 border-violet-200',
+  default: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-white/10 dark:text-slate-300 dark:border-white/10',
+  success: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/25',
+  warning: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/25',
+  danger:  'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/25',
+  info:    'bg-brand-50 text-brand-700 border-brand-200 dark:bg-brand-500/15 dark:text-brand-300 dark:border-brand-500/25',
+  purple:  'bg-navy-50 text-navy-700 border-navy-200 dark:bg-brand-500/10 dark:text-brand-200 dark:border-brand-500/20',
 };
 
 export function Badge({ children, variant = 'default', className = '' }: {
   children: React.ReactNode; variant?: BadgeVariant; className?: string;
 }) {
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border ${badgeVariants[variant]} ${className}`}>
+    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full border ${badgeVariants[variant]} ${className}`}>
       {children}
     </span>
   );
@@ -198,7 +206,7 @@ export function Badge({ children, variant = 'default', className = '' }: {
 
 // ── Spinner ───────────────────────────────────
 export function Spinner({ size = 20, className = '' }: { size?: number; className?: string }) {
-  return <Loader2 size={size} className={`animate-spin text-indigo-600 ${className}`} />;
+  return <Loader2 size={size} className={`animate-spin text-brand-600 ${className}`} />;
 }
 
 // ── Card ──────────────────────────────────────
@@ -206,7 +214,7 @@ export function Card({ children, className = '', hover = false }: {
   children: React.ReactNode; className?: string; hover?: boolean;
 }) {
   return (
-    <div className={`bg-white rounded-2xl border border-slate-100 shadow-sm ${hover ? 'hover:shadow-md hover:-translate-y-0.5 transition-all duration-200' : ''} ${className}`}>
+    <div className={`bg-white rounded-2xl border border-slate-200/70 shadow-card dark:bg-navy-900 dark:border-white/10 ${hover ? 'lift hover:border-brand-200 dark:hover:border-brand-500/40' : ''} ${className}`}>
       {children}
     </div>
   );
@@ -227,12 +235,12 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`relative bg-white rounded-2xl shadow-2xl w-full ${modalSizes[size]} overflow-hidden`}>
+      <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-md animate-fade-in" onClick={onClose} />
+      <div className={`relative bg-white dark:bg-navy-900 rounded-2xl shadow-2xl w-full ${modalSizes[size]} overflow-hidden animate-scale-in ring-1 ring-navy-900/5 dark:ring-white/10`}>
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-            <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-white/10">
+            <h2 className="text-base font-semibold text-navy-900 dark:text-slate-100">{title}</h2>
+            <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-navy-700 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-lg transition-colors">
               <X size={16} />
             </button>
           </div>
@@ -249,32 +257,45 @@ export function Avatar({ name, src, size = 'md' }: {
 }) {
   const sizeMap = { sm: 'w-7 h-7 text-xs', md: 'w-9 h-9 text-sm', lg: 'w-12 h-12 text-base' };
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  if (src) return <img src={src} alt={name} className={`${sizeMap[size]} rounded-full object-cover`} />;
+  if (src) return <img src={src} alt={name} className={`${sizeMap[size]} rounded-full object-cover ring-2 ring-white shadow-sm`} />;
   return (
-    <div className={`${sizeMap[size]} rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-bold flex-shrink-0`}>
+    <div className={`${sizeMap[size]} rounded-full bg-gradient-to-br from-brand-400 to-navy-700 flex items-center justify-center text-white font-bold flex-shrink-0 shadow-sm ring-2 ring-white`}>
       {initials}
     </div>
   );
 }
 
 // ── ProgressBar ───────────────────────────────
-export function ProgressBar({ value, showLabel = false, color = 'indigo', size = 'md' }: {
-  value: number; showLabel?: boolean; color?: 'indigo' | 'emerald' | 'amber' | 'rose';
+export function ProgressBar({ value, showLabel = false, color = 'brand', size = 'md' }: {
+  value: number; showLabel?: boolean; color?: 'brand' | 'indigo' | 'emerald' | 'amber' | 'rose';
   size?: 'sm' | 'md' | 'lg';
 }) {
-  const colorMap = { indigo: 'bg-indigo-500', emerald: 'bg-emerald-500', amber: 'bg-amber-500', rose: 'bg-rose-500' };
-  const sizeMap = { sm: 'h-1', md: 'h-1.5', lg: 'h-2.5' };
+  const colorMap: Record<string, string> = {
+    brand:   'from-brand-500 to-brand-400',
+    indigo:  'from-brand-500 to-brand-400', // legacy alias → brand
+    emerald: 'from-emerald-500 to-emerald-400',
+    amber:   'from-amber-500 to-amber-400',
+    rose:    'from-rose-500 to-rose-400',
+  };
+  const glowMap: Record<string, string> = {
+    brand: 'shadow-[0_0_12px_rgba(20,184,166,0.45)]',
+    indigo: 'shadow-[0_0_12px_rgba(20,184,166,0.45)]',
+    emerald: 'shadow-[0_0_12px_rgba(16,185,129,0.4)]',
+    amber: 'shadow-[0_0_12px_rgba(245,158,11,0.4)]',
+    rose: 'shadow-[0_0_12px_rgba(244,63,94,0.4)]',
+  };
+  const sizeMap = { sm: 'h-1.5', md: 'h-2', lg: 'h-3' };
   const pct = Math.min(Math.max(value, 0), 100);
   return (
     <div className="w-full">
       {showLabel && (
         <div className="flex justify-between text-xs mb-1.5">
-          <span className="text-slate-500">{pct}% funded</span>
+          <span className="text-slate-500 font-medium">{pct}% funded</span>
         </div>
       )}
       <div className={`w-full bg-slate-100 rounded-full overflow-hidden ${sizeMap[size]}`}>
         <div
-          className={`h-full rounded-full transition-all duration-700 ${colorMap[color]}`}
+          className={`h-full rounded-full bg-gradient-to-r ${colorMap[color]} ${glowMap[color]} transition-[width] duration-[900ms] ease-premium`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -289,9 +310,9 @@ export function EmptyState({ icon, title, description, action }: {
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      <div className="text-slate-300 mb-4">{icon}</div>
-      <h3 className="text-base font-semibold mb-1">{title}</h3>
-      {description && <p className="text-sm max-w-xs mb-5">{description}</p>}
+      <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-4 dark:bg-white/5 dark:text-slate-500">{icon}</div>
+      <h3 className="text-base font-semibold text-navy-900 dark:text-slate-100 mb-1">{title}</h3>
+      {description && <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs mb-5">{description}</p>}
       {action}
     </div>
   );
