@@ -59,7 +59,7 @@ export class AnalyticsRepository {
       prisma.$transaction([
         prisma.campaign.findMany({
           where: { creatorId, deletedAt: null },
-          include: { _count: { select: { donations: true } } },
+          include: { category: true, _count: { select: { donations: true } } },
           orderBy: { createdAt: 'desc' },
         }),
         prisma.donation.aggregate({
@@ -86,7 +86,16 @@ export class AnalyticsRepository {
     ]);
 
     return {
-      campaigns,
+      campaigns: campaigns.map(c => {
+        const goal = Number(c.goalAmount);
+        const raised = Number(c.raisedAmount);
+        return {
+          ...c,
+          goalAmount: goal,
+          raisedAmount: raised,
+          progressPercent: goal > 0 ? Math.min(Math.round((raised / goal) * 100), 100) : 0,
+        };
+      }),
       totalRaised: donationAgg._sum.amount ?? 0,
       totalDonations: donationAgg._count.id,
       recentDonations,
