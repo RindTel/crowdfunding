@@ -28,7 +28,6 @@ export class UserRepository {
           id: true, email: true, firstName: true, lastName: true,
           avatarUrl: true, isActive: true, isVerified: true, createdAt: true,
           userRoles: { include: { role: { select: { name: true } } } },
-          _count: { select: { creator: true } },
         },
       }),
       prisma.user.count({ where }),

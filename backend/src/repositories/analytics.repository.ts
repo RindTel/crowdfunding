@@ -32,6 +32,7 @@ export class AnalyticsRepository {
       prisma.campaign.groupBy({
         by: ['status'],
         _count: { id: true },
+        orderBy: { status: 'asc' },
       }),
       prisma.campaign.findMany({
         where: { deletedAt: null },
@@ -54,31 +55,33 @@ export class AnalyticsRepository {
   }
 
   async getCreatorStats(creatorId: string) {
-    const [campaigns, donationAgg, recentDonations, monthlyRevenue] = await prisma.$transaction([
-      prisma.campaign.findMany({
-        where: { creatorId, deletedAt: null },
-        include: { _count: { select: { donations: true } } },
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.donation.aggregate({
-        where: {
-          campaign: { creatorId },
-          status: DonationStatus.COMPLETED,
-        },
-        _sum: { amount: true },
-        _count: { id: true },
-      }),
-      prisma.donation.findMany({
-        where: { campaign: { creatorId }, status: DonationStatus.COMPLETED },
-        take: 10,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          campaign: { select: { title: true } },
-          donor: {
-            include: { user: { select: { firstName: true, lastName: true } } },
+    const [[campaigns, donationAgg, recentDonations], monthlyRevenue] = await Promise.all([
+      prisma.$transaction([
+        prisma.campaign.findMany({
+          where: { creatorId, deletedAt: null },
+          include: { _count: { select: { donations: true } } },
+          orderBy: { createdAt: 'desc' },
+        }),
+        prisma.donation.aggregate({
+          where: {
+            campaign: { creatorId },
+            status: DonationStatus.COMPLETED,
           },
-        },
-      }),
+          _sum: { amount: true },
+          _count: { id: true },
+        }),
+        prisma.donation.findMany({
+          where: { campaign: { creatorId }, status: DonationStatus.COMPLETED },
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+          include: {
+            campaign: { select: { title: true } },
+            donor: {
+              include: { user: { select: { firstName: true, lastName: true } } },
+            },
+          },
+        }),
+      ]),
       this.getMonthlyRevenue(creatorId),
     ]);
 

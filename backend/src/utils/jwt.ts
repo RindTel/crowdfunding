@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/env';
 import { ApiError } from '../types/errors';
 
@@ -22,7 +23,10 @@ export function signAccessToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): strin
 }
 
 export function signRefreshToken(userId: string): string {
-  return jwt.sign({ sub: userId }, config.JWT_REFRESH_SECRET, {
+  // `jti` guarantees each refresh token is unique even when two tokens are
+  // minted for the same user within the same second (iat has 1s granularity),
+  // which would otherwise collide on the unique `token` column.
+  return jwt.sign({ sub: userId, jti: uuidv4() }, config.JWT_REFRESH_SECRET, {
     expiresIn: config.JWT_REFRESH_EXPIRES_IN as jwt.SignOptions['expiresIn'],
   });
 }
