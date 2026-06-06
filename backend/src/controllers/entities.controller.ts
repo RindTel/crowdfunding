@@ -5,7 +5,7 @@ import { CampaignUpdateService } from '../services/update.service';
 import { UserService } from '../services/user.service';
 import { ReportService } from '../services/report.service';
 import { CategoryRepository } from '../repositories/category.repository';
-import { ResponseBuilder, buildPaginationMeta } from '../utils/response';
+import { ResponseBuilder } from '../utils/response';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { slugify } from '../utils/slug';
 

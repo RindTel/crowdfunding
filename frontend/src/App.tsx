@@ -9,7 +9,7 @@ import { LoginPage, RegisterPage } from './pages/AuthPages';
 import { LandingPage } from './pages/LandingPage';
 import { CampaignsPage, CampaignDetailPage, CreateCampaignPage, CampaignEditPage } from './pages';
 import { DashboardOverviewPage, DashboardCampaignsPage, DashboardSettingsPage } from './pages/DashboardPages';
-import { AdminUsersPage, AdminDonationsPage, AdminReportsPage, AdminAnalyticsPage, AnalyticsRouterPage } from './pages/AdminPages';
+import { AdminUsersPage, AdminDonationsPage, AdminReportsPage, AnalyticsRouterPage } from './pages/AdminPages';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000, refetchOnWindowFocus: false } },
@@ -17,6 +17,8 @@ const queryClient = new QueryClient({
 
 function AppInit({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, fetchProfile } = useAuthStore();
+  // Re-validate the persisted session once on mount only.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (isAuthenticated) fetchProfile().catch(() => {}); }, []);
   return <>{children}</>;
 }

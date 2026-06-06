@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Eye, Trash2, Plus, X, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Save, Eye, Trash2, Plus, AlertTriangle } from 'lucide-react';
 import { useCampaign, useUpdateCampaign, useDeleteCampaign, useRewards, useCreateReward, useDeleteReward, useCreateCampaignUpdate, useCampaignUpdates } from '../../hooks/useApi';
 import { useAuthStore } from '../../store/auth.store';
 import { Input, Textarea, Select, Button, Card, Badge, PageLoader, Modal } from '../../components/ui';
@@ -60,48 +60,48 @@ function RewardManager({ campaignId }: { campaignId: string }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">Backer Rewards</h3>
+        <h3 className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100">Backer rewards</h3>
         <Button size="sm" variant="outline" leftIcon={<Plus size={12} />} onClick={() => setShowForm(v => !v)}>
-          {showForm ? 'Cancel' : 'Add Reward'}
+          {showForm ? 'Cancel' : 'Add reward'}
         </Button>
       </div>
 
       {showForm && (
-        <div className="border border-brand-200 dark:border-brand-500/20 bg-brand-50/30 dark:bg-brand-500/10 rounded-2xl p-4 mb-4 space-y-3">
-          <h4 className="text-xs font-semibold uppercase tracking-wider">New Reward</h4>
+        <div className="border border-brand-200 dark:border-brand-500/20 bg-brand-50/40 dark:bg-brand-500/10 rounded-2xl p-4 mb-4 space-y-3">
+          <h4 className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-700 dark:text-brand-300">New reward</h4>
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Title" placeholder="e.g. Early Supporter" value={form.title} onChange={e => set('title', e.target.value)} required />
-            <Input label="Min. pledge ($)" type="number" placeholder="25" value={form.minimumAmount} onChange={e => set('minimumAmount', e.target.value)} required />
+            <Input label="Title" placeholder="Early supporter" value={form.title} onChange={e => set('title', e.target.value)} required />
+            <Input label="Min. pledge ($)" type="number" placeholder="25" value={form.minimumAmount} onChange={e => set('minimumAmount', e.target.value)} required className="tnum" />
           </div>
           <Textarea label="Description" rows={2} placeholder="What do backers receive?" value={form.description} onChange={e => set('description', e.target.value)} />
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Max claims" type="number" placeholder="Unlimited" value={form.maxClaims} onChange={e => set('maxClaims', e.target.value)} />
+            <Input label="Max claims" type="number" placeholder="Unlimited" value={form.maxClaims} onChange={e => set('maxClaims', e.target.value)} className="tnum" />
             <Input label="Est. delivery (month)" type="month" value={form.estimatedDelivery} onChange={e => set('estimatedDelivery', e.target.value)} />
           </div>
-          <Button size="sm" onClick={handleCreate} loading={createReward.isPending}>Save Reward</Button>
+          <Button size="sm" onClick={handleCreate} loading={createReward.isPending}>Save reward</Button>
         </div>
       )}
 
       {rewards.length === 0 ? (
-        <p className="text-sm text-center py-6 border-2 border-dashed rounded-2xl">
-          No rewards yet — add one above
+        <p className="text-sm text-center text-slate-600 dark:text-slate-400 py-6 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl">
+          No rewards yet. Add one above.
         </p>
       ) : (
         <div className="space-y-2.5">
           {rewards.map(r => (
             <div key={r.id} className="flex items-start justify-between gap-3 p-3.5 border border-slate-200 dark:border-white/10 rounded-xl">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-sm font-semibold">{r.title}</span>
-                  <span className="text-xs text-brand-600 font-medium">${r.minimumAmount}+</span>
+                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <span className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100">{r.title}</span>
+                  <span className="font-display text-xs font-semibold text-brand-700 dark:text-brand-400 tnum">${r.minimumAmount}+</span>
                   {!r.isAvailable && <Badge variant="danger">Unavailable</Badge>}
                 </div>
-                <p className="text-xs truncate">{r.description}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 truncate">{r.description}</p>
                 {r.maxClaims && (
-                  <p className="text-xs mt-0.5">{r.claimsCount} / {r.maxClaims} claimed</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-500 mt-0.5 tnum">{r.claimsCount} / {r.maxClaims} claimed</p>
                 )}
               </div>
-              <button onClick={() => handleDelete(r.id)} className="p-1.5 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0">
+              <button onClick={() => handleDelete(r.id)} aria-label="Delete reward" className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors flex-shrink-0">
                 <Trash2 size={13} />
               </button>
             </div>
@@ -137,33 +137,33 @@ function UpdatesPanel({ campaignId }: { campaignId: string }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">Campaign Updates</h3>
+        <h3 className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100">Campaign updates</h3>
         <Button size="sm" variant="outline" leftIcon={<Plus size={12} />} onClick={() => setShowForm(v => !v)}>
-          {showForm ? 'Cancel' : 'Post Update'}
+          {showForm ? 'Cancel' : 'Post update'}
         </Button>
       </div>
 
       {showForm && (
-        <div className="border border-emerald-200 bg-emerald-50/20 rounded-2xl p-4 mb-4 space-y-3">
-          <h4 className="text-xs font-semibold uppercase tracking-wider">New Update</h4>
-          <Input label="Title" placeholder="What's new?" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
-          <Textarea label="Content" rows={4} placeholder="Keep your backers in the loop…" value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} />
-          <Input label="Image URL (optional)" type="url" placeholder="https://…" value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} />
-          <Button size="sm" onClick={handlePost} loading={createUpdate.isPending}>Publish Update</Button>
+        <div className="border border-brand-200 dark:border-brand-500/20 bg-brand-50/40 dark:bg-brand-500/10 rounded-2xl p-4 mb-4 space-y-3">
+          <h4 className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-700 dark:text-brand-300">New update</h4>
+          <Input label="Title" placeholder="What changed this week?" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+          <Textarea label="Content" rows={4} placeholder="Tell backers where things stand and what comes next." value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} />
+          <Input label="Image URL (optional)" type="url" placeholder="https://" value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} />
+          <Button size="sm" onClick={handlePost} loading={createUpdate.isPending}>Publish update</Button>
         </div>
       )}
 
       {updates.length === 0 ? (
-        <p className="text-sm text-center py-6 border-2 border-dashed rounded-2xl">
-          No updates posted yet
+        <p className="text-sm text-center text-slate-600 dark:text-slate-400 py-6 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl">
+          No updates posted yet.
         </p>
       ) : (
         <div className="space-y-3">
           {updates.map(u => (
             <div key={u.id} className="p-4 border border-slate-200 dark:border-white/10 rounded-xl">
-              <p className="text-[11px] mb-1">{new Date(u.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}</p>
-              <p className="text-sm font-semibold mb-1">{u.title}</p>
-              <p className="text-xs leading-relaxed line-clamp-3">{u.content}</p>
+              <p className="font-display text-[11px] text-slate-500 dark:text-slate-400 mb-1 tnum">{new Date(u.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}</p>
+              <p className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100 mb-1">{u.title}</p>
+              <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-3">{u.content}</p>
             </div>
           ))}
         </div>
@@ -246,8 +246,10 @@ export function CampaignEditPage() {
   if (isLoading) return <PageLoader />;
   if (!data?.data) return (
     <div className="text-center py-20">
-      <p className="text-slate-500 dark:text-slate-400">Campaign not found</p>
-      <Link to="/dashboard/campaigns" className="text-brand-600 text-sm mt-2 inline-block">← Back</Link>
+      <p className="text-slate-600 dark:text-slate-300">Campaign not found.</p>
+      <Link to="/dashboard/campaigns" className="inline-flex items-center gap-1.5 font-display text-sm font-semibold text-brand-700 dark:text-brand-400 mt-2 hover:text-brand-800 dark:hover:text-brand-300">
+        <ArrowLeft size={14} /> Back to campaigns
+      </Link>
     </div>
   );
 
@@ -259,17 +261,17 @@ export function CampaignEditPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Link to="/dashboard/campaigns" className="p-2 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors">
+          <Link to="/dashboard/campaigns" aria-label="Back to campaigns" className="p-2 text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors">
             <ArrowLeft size={16} />
           </Link>
           <div>
-            <h1 className="text-lg font-bold">Edit Campaign</h1>
-            <p className="text-xs mt-0.5 truncate max-w-xs">{campaign.title}</p>
+            <h1 className="font-display text-lg font-bold text-navy-900 dark:text-slate-100">Edit campaign</h1>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 truncate max-w-xs">{campaign.title}</p>
           </div>
         </div>
         <div className="flex items-center gap-2.5">
           <Link to={`/campaigns/${campaign.slug}`} target="_blank">
-            <Button variant="outline" size="sm" leftIcon={<Eye size={13} />}>Preview</Button>
+            <Button variant="outline" size="sm" leftIcon={<Eye size={13} />}>Preview page</Button>
           </Link>
           <Button
             size="sm"
@@ -277,26 +279,30 @@ export function CampaignEditPage() {
             loading={updateCampaign.isPending}
             leftIcon={<Save size={13} />}
           >
-            Save Changes
+            Save changes
           </Button>
         </div>
       </div>
 
       {/* Status + danger zone banner */}
-      <div className="flex items-center justify-between p-3.5 rounded-xl border mb-6">
-        <div className="flex items-center gap-3">
-          <span className="text-xs">Status:</span>
+      <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-slate-200/70 dark:border-white/10 bg-white dark:bg-navy-900 shadow-soft mb-6">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="font-display text-xs font-semibold text-slate-500 dark:text-slate-400">Status</span>
           <Badge variant={campaign.status === 'ACTIVE' ? 'success' : campaign.status === 'DRAFT' ? 'default' : 'warning'}>
             {campaign.status}
           </Badge>
-          <span className="text-xs">·</span>
-          <span className="text-xs">{campaign.progressPercent}% funded · {campaign.donorsCount} donors</span>
+          <span className="text-xs text-slate-300 dark:text-white/20">·</span>
+          <span className="text-xs text-slate-600 dark:text-slate-400">
+            <span className="font-display font-semibold text-brand-700 dark:text-brand-400 tnum">{campaign.progressPercent}%</span> funded
+            {' · '}
+            <span className="font-display font-semibold text-navy-900 dark:text-slate-100 tnum">{campaign.donorsCount}</span> backers
+          </span>
         </div>
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 font-medium transition-colors"
+          className="flex items-center gap-1.5 font-display text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 transition-colors flex-shrink-0"
         >
-          <Trash2 size={12} /> Delete Campaign
+          <Trash2 size={12} /> Delete campaign
         </button>
       </div>
 
@@ -304,7 +310,7 @@ export function CampaignEditPage() {
         {/* Left — main form */}
         <div className="space-y-5">
           <Card className="p-5 space-y-4">
-            <h3 className="text-sm font-semibold">Campaign Details</h3>
+            <h3 className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100">Campaign details</h3>
             <Input
               label="Title" required
               value={form.title}
@@ -328,7 +334,7 @@ export function CampaignEditPage() {
               onChange={e => set('coverImageUrl', e.target.value)}
             />
             {form.coverImageUrl && (
-              <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-100 dark:bg-white/10">
+              <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-100 dark:bg-white/10 border border-slate-200/70 dark:border-white/10">
                 <img src={form.coverImageUrl} alt="Cover preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
               </div>
             )}
@@ -340,12 +346,13 @@ export function CampaignEditPage() {
           </Card>
 
           <Card className="p-5 space-y-4">
-            <h3 className="text-sm font-semibold">Funding Settings</h3>
+            <h3 className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100">Funding settings</h3>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Funding goal ($)" required type="number"
                 value={form.goalAmount}
                 onChange={e => set('goalAmount', e.target.value)}
+                className="tnum"
               />
               <Input
                 label="End date" type="date"
@@ -358,22 +365,24 @@ export function CampaignEditPage() {
                 label="Min donation ($)" type="number" placeholder="No minimum"
                 value={form.minDonation}
                 onChange={e => set('minDonation', e.target.value)}
+                className="tnum"
               />
               <Input
                 label="Max donation ($)" type="number" placeholder="No maximum"
                 value={form.maxDonation}
                 onChange={e => set('maxDonation', e.target.value)}
+                className="tnum"
               />
             </div>
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className="flex items-center gap-3 cursor-pointer select-none">
               <div
                 onClick={() => set('allowAnonymous', !form.allowAnonymous)}
-                className={`w-10 h-[22px] rounded-full transition-colors flex items-center px-0.5 ${form.allowAnonymous ? 'bg-brand-600' : 'bg-slate-200 dark:bg-white/15'}`}
+                className={`w-10 h-[22px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 ${form.allowAnonymous ? 'bg-brand-600' : 'bg-slate-300 dark:bg-white/15'}`}
               >
-                <div className={`w-4 h-4 rounded-full shadow transition-transform ${form.allowAnonymous ? 'translate-x-[18px]' : ''}`} />
+                <div className={`w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${form.allowAnonymous ? 'translate-x-[18px]' : ''}`} />
               </div>
               <div>
-                <p className="text-sm font-medium">Allow anonymous donations</p>
+                <p className="font-display text-sm font-medium text-navy-900 dark:text-slate-100">Allow anonymous donations</p>
               </div>
             </label>
 
@@ -385,9 +394,9 @@ export function CampaignEditPage() {
               options={statusOptions}
             />
             {!isAdmin && (
-              <div className="flex items-start gap-2 text-xs text-amber-700 dark:text-amber-200 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
-                <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
-                Setting to "Submit for Review" notifies admins. Status ACTIVE requires admin approval.
+              <div className="flex items-start gap-2 text-xs leading-relaxed text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
+                <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                Choosing "Submit for Review" notifies the team. Going live (Active) needs admin approval.
               </div>
             )}
           </Card>
@@ -405,18 +414,18 @@ export function CampaignEditPage() {
       </div>
 
       {/* Delete confirmation modal */}
-      <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Campaign" size="sm">
+      <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete campaign" size="sm">
         <div className="p-5 space-y-4">
-          <div className="flex items-start gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
-            <AlertTriangle size={16} className="text-red-600 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-800">
-              This will permanently deactivate <strong>{campaign.title}</strong>. Donation records will be preserved but the campaign will no longer be visible.
+          <div className="flex items-start gap-3 p-3 bg-rose-50 dark:bg-rose-500/10 rounded-xl border border-rose-100 dark:border-rose-500/20">
+            <AlertTriangle size={16} className="text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm leading-relaxed text-rose-800 dark:text-rose-200">
+              This permanently deactivates <strong className="font-semibold">{campaign.title}</strong>. Donation records stay on file, but the page will no longer be visible.
             </p>
           </div>
           <div className="flex gap-2.5">
-            <Button variant="secondary" fullWidth onClick={() => setShowDeleteModal(false)}>Cancel</Button>
+            <Button variant="secondary" fullWidth onClick={() => setShowDeleteModal(false)}>Keep campaign</Button>
             <Button variant="danger" fullWidth onClick={handleDelete} loading={deleteCampaign.isPending}>
-              Delete Campaign
+              Delete campaign
             </Button>
           </div>
         </div>
