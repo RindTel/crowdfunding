@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { config } from '../config/env';
 import { AuthRepository } from '../repositories/auth.repository';
 import { RegisterDto, LoginDto } from '../dtos/auth.dto';
-import { generateTokenPair, verifyRefreshToken, signRefreshToken } from '../utils/jwt';
+import { generateTokenPair } from '../utils/jwt';
 import { ApiError } from '../types/errors';
 import { RoleName } from '@prisma/client';
 import { prisma } from '../config/database';

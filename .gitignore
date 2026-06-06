@@ -15,3 +15,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Local agent / tooling artifacts
+.claude/
+.impeccable/
