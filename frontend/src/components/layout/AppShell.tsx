@@ -56,10 +56,24 @@ const donorNav: NavItem[] = [
 function BrandMark({ size = 32 }: { size?: number }) {
   return (
     <div
-      className="rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center flex-shrink-0 shadow-glow-sm"
+      className="rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center flex-shrink-0 ring-1 ring-brand-300/40"
       style={{ width: size, height: size }}
     >
-      <Flame size={size * 0.46} className="text-white" />
+      <Flame size={size * 0.46} className="text-white" strokeWidth={2.4} />
+    </div>
+  );
+}
+
+// Wordmark — "FundForge" with the press subtitle
+function Wordmark({ subtitle = 'The Campaign Press', dark = false }: { subtitle?: string; dark?: boolean }) {
+  return (
+    <div className="leading-none">
+      <span className={`font-display font-extrabold text-[15px] tracking-tight ${dark ? 'text-white' : 'text-navy-900 dark:text-slate-100'}`}>
+        Fund<span className="text-brand-500">Forge</span>
+      </span>
+      {subtitle && (
+        <div className="text-[9.5px] mt-1 uppercase tracking-[0.2em] text-brand-500/80 dark:text-brand-400/80 font-display font-semibold">{subtitle}</div>
+      )}
     </div>
   );
 }
@@ -88,8 +102,8 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
         <BrandMark size={32} />
         {!collapsed && (
           <div className="leading-none">
-            <span className="text-white font-display font-bold text-[15px] tracking-tight">FundForge</span>
-            <div className="text-[10px] mt-1 uppercase tracking-[0.18em] text-brand-400/80 font-semibold">Platform</div>
+            <span className="text-white font-display font-extrabold text-[15px] tracking-tight">Fund<span className="text-brand-400">Forge</span></span>
+            <div className="text-[9.5px] mt-1 uppercase tracking-[0.2em] text-brand-400/80 font-display font-semibold">The Campaign Press</div>
           </div>
         )}
         {onClose && (
@@ -118,16 +132,23 @@ function SidebarContent({ collapsed, onClose }: { collapsed: boolean; onClose?: 
             end={to === '/dashboard'}
             onClick={onClose}
             className={({ isActive }) => [
-              'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
+              'group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-display font-medium transition-all duration-200',
               collapsed ? 'justify-center' : '',
               isActive
-                ? 'bg-brand-600 text-white shadow-glow-sm'
+                ? 'bg-brand-500/12 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-white/5',
             ].join(' ')}
             title={collapsed ? label : undefined}
           >
-            <Icon size={16} className="flex-shrink-0" />
-            {!collapsed && <span>{label}</span>}
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className={`absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-brand-400 ${collapsed ? 'left-0' : '-left-0.5'}`} />
+                )}
+                <Icon size={16} className={`flex-shrink-0 ${isActive ? 'text-brand-300' : ''}`} strokeWidth={isActive ? 2.4 : 2} />
+                {!collapsed && <span>{label}</span>}
+              </>
+            )}
           </NavLink>
         ))}
 
@@ -173,14 +194,14 @@ export function AppShell() {
   const { user } = useAuthStore();
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-[100dvh] overflow-hidden">
       {/* Desktop sidebar */}
       <aside className={`hidden lg:flex flex-col flex-shrink-0 transition-all duration-300 ease-premium ${collapsed ? 'w-[68px]' : 'w-[232px]'} relative`}>
         <SidebarContent collapsed={collapsed} />
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="absolute -right-3 top-[72px] w-6 h-6 bg-navy-700 hover:bg-brand-600 rounded-full flex items-center justify-center text-white shadow-md transition-colors z-10 ring-2 ring-slate-50"
+          className="absolute -right-3 top-[72px] w-6 h-6 bg-navy-700 hover:bg-brand-600 rounded-full flex items-center justify-center text-white shadow-md transition-colors z-10 ring-2 ring-slate-50 dark:ring-navy-950"
         >
           <ChevronRight size={11} className={`transition-transform duration-300 ${collapsed ? '' : 'rotate-180'}`} />
         </button>
@@ -216,9 +237,9 @@ export function AppShell() {
           <div className="flex items-center gap-2.5">
             <Link
               to="/dashboard/campaigns/new"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-[13px] font-semibold shadow-glow-sm hover:shadow-glow transition-all"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-[13px] font-display font-semibold shadow-[0_6px_18px_-8px_rgba(13,148,136,0.65)] hover:shadow-glow-sm active:scale-[0.98] transition-all"
             >
-              <Plus size={15} /> New campaign
+              <Plus size={15} strokeWidth={2.5} /> New campaign
             </Link>
             <ThemeToggle />
             <NotificationBell />
@@ -242,7 +263,7 @@ export function AppShell() {
 
 // ── Public layout (campaigns browse, landing) ─
 export function PublicLayout() {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
   return (
@@ -251,22 +272,22 @@ export function PublicLayout() {
         <div className="max-w-7xl mx-auto px-5 h-full flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <BrandMark size={32} />
-            <span className="font-display font-bold text-[15px] text-navy-900 dark:text-slate-100">FundForge</span>
+            <Wordmark subtitle="" />
           </Link>
           <nav className="hidden md:flex items-center gap-7">
-            <Link to="/campaigns" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white transition-colors font-medium">Explore</Link>
-            <Link to="/how-it-works" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white transition-colors font-medium">How it works</Link>
+            <Link to="/campaigns" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white transition-colors font-display font-medium">Explore</Link>
+            <Link to="/how-it-works" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white transition-colors font-display font-medium">How it works</Link>
           </nav>
           <div className="flex items-center gap-3">
             <ThemeToggle />
             {isAuthenticated ? (
-              <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 shadow-glow-sm hover:shadow-glow transition-all">
+              <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-display font-semibold hover:bg-brand-500 shadow-[0_6px_18px_-8px_rgba(13,148,136,0.65)] hover:shadow-glow-sm active:scale-[0.98] transition-all">
                 Dashboard
               </button>
             ) : (
               <>
-                <Link to="/login" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white font-medium transition-colors">Sign in</Link>
-                <Link to="/register" className="px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 shadow-glow-sm hover:shadow-glow transition-all">Get started</Link>
+                <Link to="/login" className="text-sm text-slate-600 hover:text-navy-900 dark:text-slate-300 dark:hover:text-white font-display font-medium transition-colors">Sign in</Link>
+                <Link to="/register" className="px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-display font-semibold hover:bg-brand-500 shadow-[0_6px_18px_-8px_rgba(13,148,136,0.65)] hover:shadow-glow-sm active:scale-[0.98] transition-all">Start a campaign</Link>
               </>
             )}
           </div>
@@ -275,9 +296,15 @@ export function PublicLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t border-slate-200/70 py-8 bg-white/40 dark:bg-navy-900/40 dark:border-white/10">
-        <div className="max-w-7xl mx-auto px-5 text-center text-sm text-slate-500 dark:text-slate-400">
-          © {new Date().getFullYear()} FundForge. Built with <span className="text-brand-500">♥</span> for changemakers.
+      <footer className="border-t border-slate-200/70 py-10 bg-white/40 dark:bg-navy-900/40 dark:border-white/10">
+        <div className="max-w-7xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <BrandMark size={26} />
+            <Wordmark subtitle="" />
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-display">
+            Printed and pledged since {new Date().getFullYear()}. Every campaign here was made by a person.
+          </p>
         </div>
       </footer>
     </div>
@@ -297,7 +324,7 @@ export function ProtectedRoute({ roles }: { roles?: string[] }) {
     if (roles && !roles.some(r => user?.roles.includes(r))) {
       navigate('/dashboard', { replace: true });
     }
-  }, [isAuthenticated, user, roles]);
+  }, [isAuthenticated, user, roles, navigate]);
 
   if (!isAuthenticated) return null;
   return <Outlet />;

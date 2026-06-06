@@ -100,7 +100,7 @@ export function NotificationBell() {
       >
         <Bell size={17} />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white tnum">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-brand-500 text-white text-[10px] font-display font-bold rounded-full flex items-center justify-center ring-2 ring-white dark:ring-navy-900 tnum">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -111,7 +111,7 @@ export function NotificationBell() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-white/10">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-navy-900 dark:text-slate-100">Notifications</h3>
+              <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">Notifications</h3>
               {unreadCount > 0 && (
                 <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded-full dark:bg-brand-500/15 dark:text-brand-300">{unreadCount} new</span>
               )}
@@ -148,7 +148,7 @@ export function NotificationBell() {
                     <p className="text-[11px] text-slate-400 mt-0.5">{formatDistanceToNow(new Date(n.time), { addSuffix: true })}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    {n.amount != null && <span className="text-xs font-bold text-brand-600 tnum">${n.amount.toLocaleString()}</span>}
+                    {n.amount != null && <span className="font-display text-xs font-bold text-brand-700 dark:text-brand-400 tnum">${n.amount.toLocaleString()}</span>}
                     {isUnread && <span className="w-2 h-2 rounded-full bg-brand-500" />}
                   </div>
                 </div>

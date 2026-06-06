@@ -5,10 +5,10 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import {
-  Users, DollarSign, Target, TrendingUp, Search, Filter,
-  MoreHorizontal, CheckCircle, XCircle, AlertTriangle,
-  UserCheck, UserX, Trash2, Eye, Flag, RefreshCw,
-  ArrowUpRight, Activity, Award, Zap, Clock
+  Users, DollarSign, Target, Search,
+  CheckCircle, XCircle,
+  UserCheck, UserX, Trash2, Flag,
+  Activity,
 } from 'lucide-react';
 import {
   useUsers, useSetUserActive, useDeleteUser,
@@ -63,7 +63,7 @@ export function AdminUsersPage() {
     <div className="space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold">User Management</h2>
+          <h2 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">User Management</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{meta?.total ?? 0} registered users</p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -92,7 +92,7 @@ export function AdminUsersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="bg-slate-50/50 dark:bg-white/5 border-b">
+              <thead><tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/10">
                 {['User', 'Roles', 'Status', 'Joined', 'Actions'].map(h => (
                   <th key={h} className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-5 py-3.5">{h}</th>
                 ))}
@@ -108,7 +108,7 @@ export function AdminUsersPage() {
                         <div className="flex items-center gap-3">
                           <Avatar name={`${u.firstName} ${u.lastName}`} src={u.avatarUrl as string | null} />
                           <div>
-                            <p className="text-sm font-medium">{u.firstName as string} {u.lastName as string}</p>
+                            <p className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100">{u.firstName as string} {u.lastName as string}</p>
                             <p className="text-xs text-slate-500 dark:text-slate-400">{u.email as string}</p>
                           </div>
                         </div>
@@ -152,11 +152,11 @@ export function AdminUsersPage() {
         )}
 
         {meta && meta.totalPages > 1 && (
-          <div className="flex items-center justify-between px-5 py-3.5 border-t">
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-slate-100 dark:border-white/10">
             <p className="text-xs text-slate-500 dark:text-slate-400">Page {meta.page} of {meta.totalPages}</p>
             <div className="flex gap-1.5">
-              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Prev</button>
-              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Next</button>
+              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border border-slate-200 dark:border-white/10 text-navy-700 dark:text-slate-300 rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Prev</button>
+              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border border-slate-200 dark:border-white/10 text-navy-700 dark:text-slate-300 rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Next</button>
             </div>
           </div>
         )}
@@ -183,7 +183,7 @@ export function AdminDonationsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold">Donations</h2>
+          <h2 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">Donations</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{meta?.total ?? 0} transactions</p>
         </div>
         <div className="flex gap-2">
@@ -202,7 +202,7 @@ export function AdminDonationsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="bg-slate-50/50 dark:bg-white/5 border-b">
+              <thead><tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/10">
                 {['Donor', 'Campaign', 'Amount', 'Reward', 'Status', 'Date'].map(h => (
                   <th key={h} className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-5 py-3.5">{h}</th>
                 ))}
@@ -230,14 +230,14 @@ export function AdminDonationsPage() {
                           <Link to={`/campaigns/${campaign.slug}`} className="text-xs text-brand-600 hover:text-brand-700 font-medium max-w-[150px] block truncate">
                             {campaign.title}
                           </Link>
-                        ) : <span className="text-xs text-slate-500 dark:text-slate-400">—</span>}
+                        ) : <span className="text-xs text-slate-400">None</span>}
                       </td>
                       <td className="px-5 py-3.5">
-                        <p className="text-sm font-bold">{fmtCurrency(Number(d.amount))}</p>
-                        <p className="text-[10px]">{d.currency as string} · {payment?.provider}</p>
+                        <p className="font-display text-sm font-bold text-brand-700 dark:text-brand-400 tnum">{fmtCurrency(Number(d.amount))}</p>
+                        <p className="text-[10px] text-slate-400 tnum">{d.currency as string} · {payment?.provider}</p>
                       </td>
                       <td className="px-5 py-3.5">
-                        {reward ? <span className="text-xs text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full">{reward.title}</span> : <span className="text-xs text-slate-500 dark:text-slate-400">—</span>}
+                        {reward ? <span className="font-display text-xs text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-500/15 px-2 py-0.5 rounded-full">{reward.title}</span> : <span className="text-xs text-slate-400">None</span>}
                       </td>
                       <td className="px-5 py-3.5">
                         <Badge variant={statusVariant[d.status as string] ?? 'default'}>{d.status as string}</Badge>
@@ -253,11 +253,11 @@ export function AdminDonationsPage() {
           </div>
         )}
         {meta && meta.totalPages > 1 && (
-          <div className="flex items-center justify-between px-5 py-3.5 border-t">
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-slate-100 dark:border-white/10">
             <p className="text-xs text-slate-500 dark:text-slate-400">Page {meta.page} of {meta.totalPages} · {meta.total} total</p>
             <div className="flex gap-1.5">
-              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5">Prev</button>
-              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5">Next</button>
+              <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 text-xs border border-slate-200 dark:border-white/10 text-navy-700 dark:text-slate-300 rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5">Prev</button>
+              <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 text-xs border border-slate-200 dark:border-white/10 text-navy-700 dark:text-slate-300 rounded-lg disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-white/5">Next</button>
             </div>
           </div>
         )}
@@ -283,16 +283,19 @@ export function AdminReportsPage() {
   };
 
   const reasonColor: Record<string, string> = {
-    SPAM: 'bg-orange-50 text-orange-700', FRAUD: 'bg-red-50 text-red-700',
-    INAPPROPRIATE_CONTENT: 'bg-pink-50 text-pink-700', MISLEADING: 'bg-amber-50 text-amber-700',
-    COPYRIGHT: 'bg-navy-50 dark:bg-brand-500/15 text-navy-700 dark:text-slate-300', OTHER: 'bg-slate-100 dark:bg-white/10',
+    SPAM: 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
+    FRAUD: 'bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300',
+    INAPPROPRIATE_CONTENT: 'bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300',
+    MISLEADING: 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
+    COPYRIGHT: 'bg-navy-50 text-navy-700 dark:bg-white/10 dark:text-slate-300',
+    OTHER: 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300',
   };
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold">Reports</h2>
+          <h2 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">Reports</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Content moderation queue</p>
         </div>
         <div className="flex gap-2">
@@ -334,16 +337,16 @@ export function AdminReportsPage() {
                     </div>
                   )}
                   {comment && (
-                    <p className="text-xs rounded-lg px-3 py-2 mb-1 italic">"{(comment.content as string)?.slice(0, 120)}…"</p>
+                    <p className="voice text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/5 rounded-lg px-3 py-2 mb-1">"{(comment.content as string)?.slice(0, 120)}"</p>
                   )}
-                  {r.description && (
-                    <p className="text-xs mt-1">Note: {r.description as string}</p>
-                  )}
+                  {r.description ? (
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">Note: {r.description as string}</p>
+                  ) : null}
 
-                  <div className="flex items-center gap-2 mt-2 text-xs">
+                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400">
                     <span>Reported by {reporter.firstName} {reporter.lastName} ({reporter.email})</span>
                     <span>·</span>
-                    <span>{new Date(r.createdAt as string).toLocaleDateString()}</span>
+                    <span className="tnum">{new Date(r.createdAt as string).toLocaleDateString()}</span>
                   </div>
                 </div>
 
@@ -390,15 +393,14 @@ export function AdminAnalyticsPage() {
   const { data: statsData, isLoading } = useAdminStats();
   const stats = statsData?.data as Record<string, unknown> | undefined;
 
+  // Honest ledger of real figures only. No fabricated rates, no fake deltas,
+  // no rainbow chips (One Ink Rule): money is teal, the rest is ink.
   const kpis = [
-    { icon: DollarSign, label: 'Total Revenue', value: fmtCurrency(Number(stats?.totalRevenue ?? 0)), delta: '+12.3%', up: true, color: 'bg-brand-500' },
-    { icon: Heart, label: 'Total Donations', value: String(stats?.totalDonations ?? 0), delta: '+8.7%', up: true, color: 'bg-rose-500' },
-    { icon: Users, label: 'Total Users', value: String(stats?.totalUsers ?? 0), delta: '+15.1%', up: true, color: 'bg-amber-500' },
-    { icon: Target, label: 'Active Campaigns', value: String(stats?.activeCampaigns ?? 0), delta: '+3', up: true, color: 'bg-brand-500' },
-    { icon: Activity, label: 'Avg. Donation', value: fmtCurrency(Number(stats?.totalRevenue ?? 0) / Math.max(Number(stats?.totalDonations ?? 1), 1)), delta: '+$12', up: true, color: 'bg-emerald-500' },
-    { icon: Award, label: 'Success Rate', value: '68%', delta: '+4%', up: true, color: 'bg-sky-500' },
-    { icon: TrendingUp, label: 'Conversion', value: '4.2%', delta: '+0.3%', up: true, color: 'bg-pink-500' },
-    { icon: Zap, label: 'Repeat Donors', value: '34%', delta: '+2%', up: true, color: 'bg-orange-500' },
+    { icon: DollarSign, label: 'Total revenue', value: fmtCurrency(Number(stats?.totalRevenue ?? 0)), money: true },
+    { icon: Heart, label: 'Donations', value: Number(stats?.totalDonations ?? 0).toLocaleString() },
+    { icon: Users, label: 'Total users', value: Number(stats?.totalUsers ?? 0).toLocaleString() },
+    { icon: Target, label: 'Active campaigns', value: String(stats?.activeCampaigns ?? 0) },
+    { icon: Activity, label: 'Avg. donation', value: fmtCurrency(Number(stats?.totalRevenue ?? 0) / Math.max(Number(stats?.totalDonations ?? 1), 1)), money: true },
   ];
 
   if (isLoading) return <PageLoader />;
@@ -406,33 +408,32 @@ export function AdminAnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold">Analytics</h2>
+        <h2 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">Analytics</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Platform performance overview</p>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {kpis.map(({ icon: Icon, label, value, delta, up, color }) => (
-          <Card key={label} className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
-                <Icon size={15} className="text-white" />
-              </div>
-              <span className={`text-xs font-medium flex items-center gap-0.5 ${up ? 'text-emerald-600' : 'text-red-500'}`}>
-                <ArrowUpRight size={11} className={!up ? 'rotate-180' : ''} /> {delta}
-              </span>
+      {/* KPIs — ledger strip */}
+      <Card className="p-0 overflow-hidden">
+        <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y sm:divide-y-0 divide-slate-100 dark:divide-white/10">
+          {kpis.map(({ icon: Icon, label, value, money }) => (
+            <div key={label} className="p-5">
+              <dt className="flex items-center gap-2 text-[11px] font-display font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                <Icon size={13} className="text-slate-400 dark:text-slate-500" />
+                {label}
+              </dt>
+              <dd className={`mt-2.5 font-display text-2xl font-bold tnum leading-none ${money ? 'text-brand-700 dark:text-brand-400' : 'text-navy-900 dark:text-slate-100'}`}>
+                {value}
+              </dd>
             </div>
-            <p className="text-lg font-bold">{value}</p>
-            <p className="text-[11px] mt-0.5">{label}</p>
-          </Card>
-        ))}
-      </div>
+          ))}
+        </dl>
+      </Card>
 
       {/* Charts */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-1">Revenue Trend</h3>
-          <p className="text-xs mb-4">Monthly recurring revenue over 12 months</p>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">Revenue Trend</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Monthly recurring revenue over 12 months</p>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={MOCK_MONTHLY}>
               <defs>
@@ -451,8 +452,8 @@ export function AdminAnalyticsPage() {
         </Card>
 
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-1">Donations & New Users</h3>
-          <p className="text-xs mb-4">Acquisition and engagement correlation</p>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">Donations & New Users</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Acquisition and engagement correlation</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={MOCK_MONTHLY}>
               <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
@@ -467,8 +468,8 @@ export function AdminAnalyticsPage() {
         </Card>
 
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-1">Monthly Donation Volume</h3>
-          <p className="text-xs mb-4">Count of processed transactions per month</p>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">Monthly Donation Volume</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Count of processed transactions per month</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={MOCK_MONTHLY}>
               <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
@@ -482,19 +483,19 @@ export function AdminAnalyticsPage() {
 
         {/* Top campaigns table */}
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-4">Top Campaigns by Revenue</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">Top Campaigns by Revenue</h3>
           {stats?.topCampaigns ? (
             <div className="space-y-3">
               {(stats.topCampaigns as Record<string, unknown>[]).map((c, i) => (
                 <div key={c.id as string} className="flex items-center gap-3">
-                  <span className="text-xs font-bold w-5">#{i + 1}</span>
+                  <span className="font-display text-xs font-bold text-slate-400 w-6 tnum">{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{c.title as string}</p>
+                    <p className="font-display text-xs font-semibold text-navy-900 dark:text-slate-100 truncate mb-1.5">{c.title as string}</p>
                     <ProgressBar value={Number(c.progressPercent ?? 0)} size="sm" />
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-xs font-bold">{fmtCurrency(Number(c.raisedAmount))}</p>
-                    <p className="text-[10px]">{c.donorsCount as number} donors</p>
+                    <p className="font-display text-xs font-bold text-brand-700 dark:text-brand-400 tnum">{fmtCurrency(Number(c.raisedAmount))}</p>
+                    <p className="text-[10px] text-slate-400 tnum">{c.donorsCount as number} donors</p>
                   </div>
                 </div>
               ))}
@@ -535,29 +536,29 @@ function CreatorAnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold">My Analytics</h2>
+        <h2 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">My Analytics</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Performance across your campaigns only</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Total Raised', value: fmtCurrency(Number(stats.totalRaised ?? 0)), color: 'bg-brand-500', icon: DollarSign },
-          { label: 'Total Donations', value: String(stats.totalDonations ?? 0), color: 'bg-rose-500', icon: Activity },
-          { label: 'Campaigns', value: String((stats.campaigns as unknown[])?.length ?? 0), color: 'bg-brand-500', icon: Target },
-        ].map(({ label, value, color, icon: Icon }) => (
-          <Card key={label} className="p-4">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2 ${color}`}>
-              <Icon size={15} className="text-white" />
+          { label: 'Total Raised', value: fmtCurrency(Number(stats.totalRaised ?? 0)), icon: DollarSign },
+          { label: 'Total Donations', value: String(stats.totalDonations ?? 0), icon: Activity },
+          { label: 'Campaigns', value: String((stats.campaigns as unknown[])?.length ?? 0), icon: Target },
+        ].map(({ label, value, icon: Icon }) => (
+          <Card key={label} className="p-5">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 bg-brand-500/12 border border-brand-500/20 text-brand-600 dark:text-brand-300">
+              <Icon size={16} />
             </div>
-            <p className="text-xl font-bold">{value}</p>
-            <p className="text-xs mt-0.5">{label}</p>
+            <p className="font-display text-2xl font-extrabold tnum text-navy-900 dark:text-slate-100 leading-none">{value}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{label}</p>
           </Card>
         ))}
       </div>
 
       {monthly.length > 0 && (
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-4">My Monthly Revenue</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">My Monthly Revenue</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={monthly}>
               <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
@@ -582,21 +583,21 @@ function DonorAnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold">My Giving</h2>
+        <h2 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">My Giving</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Your personal donation history</p>
       </div>
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total Donated', value: fmtCurrency(Number(stats.totalDonated ?? 0)), color: 'bg-brand-500', icon: DollarSign },
-          { label: 'Donations Made', value: String(stats.totalDonations ?? 0), color: 'bg-rose-500', icon: Activity },
-          { label: 'Campaigns Backed', value: String(stats.supportedCampaigns ?? 0), color: 'bg-emerald-500', icon: Target },
-        ].map(({ label, value, color, icon: Icon }) => (
-          <Card key={label} className="p-4">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2 ${color}`}>
-              <Icon size={15} className="text-white" />
+          { label: 'Total Donated', value: fmtCurrency(Number(stats.totalDonated ?? 0)), icon: DollarSign },
+          { label: 'Donations Made', value: String(stats.totalDonations ?? 0), icon: Activity },
+          { label: 'Campaigns Backed', value: String(stats.supportedCampaigns ?? 0), icon: Target },
+        ].map(({ label, value, icon: Icon }) => (
+          <Card key={label} className="p-5">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 bg-brand-500/12 border border-brand-500/20 text-brand-600 dark:text-brand-300">
+              <Icon size={16} />
             </div>
-            <p className="text-xl font-bold">{value}</p>
-            <p className="text-xs mt-0.5">{label}</p>
+            <p className="font-display text-2xl font-extrabold tnum text-navy-900 dark:text-slate-100 leading-none">{value}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{label}</p>
           </Card>
         ))}
       </div>

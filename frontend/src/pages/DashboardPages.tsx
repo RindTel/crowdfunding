@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 import {
-  TrendingUp, Users, DollarSign, Target, ArrowUpRight,
-  Plus, Eye, Edit3, Star, Heart, Award, Activity,
-  CheckCircle, Clock, AlertCircle
+  Users, DollarSign, Target,
+  Plus, Eye, Edit3, Star, Heart, Activity,
+  CheckCircle, Clock, AlertCircle, ArrowUpRight, Trash2
 } from 'lucide-react';
 import { useAdminStats, useCreatorStats, useDonorStats, useCampaigns, useDeleteCampaign } from '../hooks/useApi';
 import { useAuthStore } from '../store/auth.store';
@@ -15,26 +14,39 @@ import { Badge, PageLoader, EmptyState, Button, Card, ProgressBar, Avatar } from
 import type { Campaign, Donation, AdminStats, CreatorStats, DonorStats } from '../types';
 import toast from 'react-hot-toast';
 
-// ── Stat Card ─────────────────────────────────
-function StatCard({ icon: Icon, label, value, delta, deltaUp, accent }: {
+// ── Stat strip ────────────────────────────────
+// A ledger-style strip, not the hero-metric template. Hairline dividers
+// separate figures; money is teal + tabular, labels are quiet slate.
+// `money` marks a figure as a currency amount (gets the teal ink).
+type Stat = {
   icon: React.ElementType; label: string; value: string;
-  delta?: string; deltaUp?: boolean; accent: string;
-}) {
+  money?: boolean; delta?: string; deltaUp?: boolean;
+};
+
+function StatStrip({ stats }: { stats: Stat[] }) {
   return (
-    <Card hover className="p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-sm bg-gradient-to-br ${accent}`}>
-          <Icon size={19} className="text-white" />
-        </div>
-        {delta && (
-          <span className={`flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full ${deltaUp ? 'text-emerald-700 bg-emerald-50' : 'text-rose-600 bg-rose-50'}`}>
-            <ArrowUpRight size={12} className={!deltaUp ? 'rotate-180' : ''} />
-            {delta}
-          </span>
-        )}
-      </div>
-      <p className="text-2xl font-display font-bold text-navy-900 dark:text-slate-100 tnum leading-none">{value}</p>
-      <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{label}</p>
+    <Card className="p-0 overflow-hidden">
+      <dl className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-slate-100 dark:divide-white/10">
+        {stats.map(({ icon: Icon, label, value, money, delta, deltaUp }) => (
+          <div key={label} className="p-5">
+            <dt className="flex items-center gap-2 text-[11px] font-display font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+              <Icon size={13} className="text-slate-400 dark:text-slate-500" />
+              {label}
+            </dt>
+            <dd className="mt-2.5 flex items-baseline gap-2">
+              <span className={`font-display text-2xl font-bold tnum leading-none ${money ? 'text-brand-700 dark:text-brand-400' : 'text-navy-900 dark:text-slate-100'}`}>
+                {value}
+              </span>
+              {delta && (
+                <span className={`inline-flex items-center gap-0.5 text-[11px] font-display font-semibold tnum ${deltaUp ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                  <ArrowUpRight size={11} className={!deltaUp ? 'rotate-90' : ''} />
+                  {delta}
+                </span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </Card>
   );
 }
@@ -45,51 +57,55 @@ function CampaignRow({ campaign, onDelete }: { campaign: Campaign; onDelete?: (i
     ACTIVE: 'success', COMPLETED: 'info', DRAFT: 'default',
     PAUSED: 'warning', CANCELLED: 'danger', PENDING_REVIEW: 'purple',
   };
+  const statusLabel: Record<string, string> = {
+    ACTIVE: 'Active', COMPLETED: 'Funded', DRAFT: 'Draft',
+    PAUSED: 'Paused', CANCELLED: 'Cancelled', PENDING_REVIEW: 'In review',
+  };
   return (
-    <tr className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+    <tr className="hover:bg-slate-50/70 dark:hover:bg-white/5 transition-colors">
       <td className="px-5 py-3.5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy-100 to-navy-200 flex-shrink-0 overflow-hidden ring-1 ring-navy-900/5">
+          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/5 flex-shrink-0 overflow-hidden ring-1 ring-slate-200/70 dark:ring-white/10">
             {campaign.coverImageUrl ? (
               <img src={campaign.coverImageUrl} alt={campaign.title} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-navy-300"><Target size={14} /></div>
+              <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-500"><Target size={14} /></div>
             )}
           </div>
           <div>
-            <p className="text-sm font-semibold text-navy-900 dark:text-slate-100 flex items-center gap-1.5">
+            <p className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100 flex items-center gap-1.5">
               {campaign.title.length > 32 ? campaign.title.slice(0, 32) + '…' : campaign.title}
               {campaign.isFeatured && <Star size={11} className="text-amber-400 fill-amber-400" />}
             </p>
-            <p className="text-xs text-slate-400">{campaign.category.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{campaign.category.name}</p>
           </div>
         </div>
       </td>
       <td className="px-5 py-3.5">
         <div className="w-28">
           <div className="flex justify-between text-xs mb-1.5">
-            <span className="font-semibold text-navy-700 dark:text-slate-300 tnum">{campaign.progressPercent}%</span>
+            <span className="font-display font-semibold text-brand-700 dark:text-brand-400 tnum">{campaign.progressPercent}%</span>
           </div>
           <ProgressBar value={campaign.progressPercent} size="sm" color={campaign.status === 'COMPLETED' ? 'emerald' : 'brand'} />
         </div>
       </td>
       <td className="px-5 py-3.5">
-        <p className="text-sm font-bold text-navy-900 dark:text-slate-100 tnum">${campaign.raisedAmount.toLocaleString()}</p>
-        <p className="text-xs text-slate-400 tnum">of ${campaign.goalAmount.toLocaleString()}</p>
+        <p className="font-display text-sm font-bold text-brand-700 dark:text-brand-400 tnum">${campaign.raisedAmount.toLocaleString()}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 tnum">of ${campaign.goalAmount.toLocaleString()}</p>
       </td>
       <td className="px-5 py-3.5">
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-300 tnum">{campaign.donorsCount}</span>
+        <span className="font-display text-sm font-semibold text-slate-700 dark:text-slate-300 tnum">{campaign.donorsCount}</span>
       </td>
       <td className="px-5 py-3.5">
-        <Badge variant={statusVariant[campaign.status] ?? 'default'}>{campaign.status}</Badge>
+        <Badge variant={statusVariant[campaign.status] ?? 'default'}>{statusLabel[campaign.status] ?? campaign.status}</Badge>
       </td>
       <td className="px-5 py-3.5">
-        <div className="flex items-center gap-1.5">
-          <Link to={`/campaigns/${campaign.slug}`} className="p-1.5 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"><Eye size={13} /></Link>
-          <Link to={`/dashboard/campaigns/${campaign.id}/edit`} className="p-1.5 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"><Edit3 size={13} /></Link>
+        <div className="flex items-center gap-1">
+          <Link to={`/campaigns/${campaign.slug}`} aria-label="View campaign" className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-500/10 rounded-lg transition-colors"><Eye size={14} /></Link>
+          <Link to={`/dashboard/campaigns/${campaign.id}/edit`} aria-label="Edit campaign" className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg transition-colors"><Edit3 size={14} /></Link>
           {onDelete && (
-            <button onClick={() => onDelete(campaign.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            <button onClick={() => onDelete(campaign.id)} aria-label="Delete campaign" className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/15 rounded-lg transition-colors">
+              <Trash2 size={14} />
             </button>
           )}
         </div>
@@ -109,18 +125,18 @@ function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={DollarSign} label="Total Revenue" value={`$${Number(stats.totalRevenue).toLocaleString()}`} delta="12.3%" deltaUp accent="from-brand-500 to-brand-600" />
-        <StatCard icon={Target} label="Active Campaigns" value={String(stats.activeCampaigns)} delta="3 new" deltaUp accent="from-brand-500 to-brand-600" />
-        <StatCard icon={Users} label="Total Users" value={stats.totalUsers.toLocaleString()} delta="8.7%" deltaUp accent="from-amber-400 to-amber-500" />
-        <StatCard icon={Heart} label="Total Donations" value={stats.totalDonations.toLocaleString()} delta="5.2%" deltaUp accent="from-rose-500 to-rose-600" />
-      </div>
+      <StatStrip stats={[
+        { icon: DollarSign, label: 'Total revenue', value: `$${Number(stats.totalRevenue).toLocaleString()}`, money: true },
+        { icon: Target, label: 'Active campaigns', value: String(stats.activeCampaigns) },
+        { icon: Users, label: 'Total users', value: stats.totalUsers.toLocaleString() },
+        { icon: Heart, label: 'Donations', value: stats.totalDonations.toLocaleString() },
+      ]} />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
         <Card className="xl:col-span-2 p-5">
-          <h3 className="text-sm font-semibold mb-4">Revenue (12 months)</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">Revenue (12 months)</h3>
           <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={stats.topCampaigns.map((c, i) => ({ name: c.title?.slice(0, 12), value: Number(c.raisedAmount) }))}>
+            <AreaChart data={stats.topCampaigns.map((c) => ({ name: c.title?.slice(0, 12), value: Number(c.raisedAmount) }))}>
               <defs>
                 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.18} />
@@ -137,7 +153,7 @@ function AdminDashboard() {
         </Card>
 
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-4">By Status</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">By Status</h3>
           <ResponsiveContainer width="100%" height={140}>
             <PieChart>
               <Pie data={stats.campaignsByStatus} cx="50%" cy="50%" innerRadius={40} outerRadius={65} paddingAngle={3} dataKey="_count.id" nameKey="status">
@@ -163,7 +179,7 @@ function AdminDashboard() {
       {/* Recent donations */}
       <Card className="overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 dark:border-white/10">
-          <h3 className="text-sm font-semibold">Recent Donations</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">Recent Donations</h3>
           <span className="flex items-center gap-1 text-xs text-emerald-600">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live
           </span>
@@ -194,16 +210,16 @@ function CreatorDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={DollarSign} label="Total Raised" value={`$${Number(stats.totalRaised).toLocaleString()}`} accent="from-brand-500 to-brand-600" />
-        <StatCard icon={Heart} label="Total Donations" value={stats.totalDonations.toLocaleString()} accent="from-rose-500 to-rose-600" />
-        <StatCard icon={Target} label="Campaigns" value={String(stats.campaigns.length)} accent="from-brand-500 to-brand-600" />
-        <StatCard icon={Activity} label="Active" value={String(stats.campaigns.filter((c: Campaign) => c.status === 'ACTIVE').length)} accent="from-emerald-500 to-emerald-600" />
-      </div>
+      <StatStrip stats={[
+        { icon: DollarSign, label: 'Total raised', value: `$${Number(stats.totalRaised).toLocaleString()}`, money: true },
+        { icon: Heart, label: 'Donations', value: stats.totalDonations.toLocaleString() },
+        { icon: Target, label: 'Campaigns', value: String(stats.campaigns.length) },
+        { icon: Activity, label: 'Active', value: String(stats.campaigns.filter((c: Campaign) => c.status === 'ACTIVE').length) },
+      ]} />
 
       {stats.monthlyRevenue.length > 0 && (
         <Card className="p-5">
-          <h3 className="text-sm font-semibold mb-4">Monthly Revenue</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">Monthly Revenue</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={stats.monthlyRevenue}>
               <CartesianGrid strokeDasharray="3 3" stroke="#94a3b81f" />
@@ -218,7 +234,7 @@ function CreatorDashboard() {
 
       <Card className="overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 dark:border-white/10">
-          <h3 className="text-sm font-semibold">My Campaigns</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">My Campaigns</h3>
           <Link to="/dashboard/campaigns/new">
             <Button size="sm" leftIcon={<Plus size={13} />}>New Campaign</Button>
           </Link>
@@ -253,15 +269,15 @@ function DonorDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-4">
-        <StatCard icon={DollarSign} label="Total Donated" value={`$${Number(stats.totalDonated).toLocaleString()}`} accent="from-brand-500 to-brand-600" />
-        <StatCard icon={Heart} label="Donations Made" value={String(stats.totalDonations)} accent="from-rose-500 to-rose-600" />
-        <StatCard icon={Target} label="Campaigns Backed" value={String(stats.supportedCampaigns)} accent="from-emerald-500 to-emerald-600" />
-      </div>
+      <StatStrip stats={[
+        { icon: DollarSign, label: 'Total backed', value: `$${Number(stats.totalDonated).toLocaleString()}`, money: true },
+        { icon: Heart, label: 'Pledges made', value: String(stats.totalDonations) },
+        { icon: Target, label: 'Campaigns backed', value: String(stats.supportedCampaigns) },
+      ]} />
 
       <Card className="overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-50 dark:border-white/10">
-          <h3 className="text-sm font-semibold">Donation History</h3>
+          <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100">Donation History</h3>
         </div>
         {stats.donations.length === 0 ? (
           <EmptyState icon={<Heart size={36} />} title="No donations yet" description="Explore campaigns and make your first contribution" action={<Link to="/campaigns"><Button size="sm" variant="secondary">Browse campaigns</Button></Link>} />
@@ -270,13 +286,13 @@ function DonorDashboard() {
             {stats.donations.map((d: Donation) => {
               const statusIcon = d.status === 'COMPLETED' ? <CheckCircle size={14} className="text-emerald-500" /> :
                 d.status === 'PENDING' ? <Clock size={14} className="text-amber-500" /> :
-                <AlertCircle size={14} className="text-red-500" />;
+                <AlertCircle size={14} className="text-rose-500" />;
               return (
                 <div key={d.id} className="flex items-center gap-4 px-5 py-4">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-navy-100 to-navy-200 flex-shrink-0 overflow-hidden ring-1 ring-navy-900/5">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-navy-700 to-navy-950 flex-shrink-0 overflow-hidden ring-1 ring-navy-900/5 dark:ring-white/10">
                     {d.campaign?.coverImageUrl ? (
                       <img src={d.campaign.coverImageUrl} alt="" className="w-full h-full object-cover" />
-                    ) : <div className="w-full h-full flex items-center justify-center text-navy-300"><Target size={14} /></div>}
+                    ) : <div className="w-full h-full flex items-center justify-center text-brand-300/70"><Target size={14} /></div>}
                   </div>
                   <div className="flex-1 min-w-0">
                     <Link to={`/campaigns/${d.campaign?.slug}`} className="text-sm font-semibold text-navy-900 dark:text-slate-100 hover:text-brand-600 transition-colors truncate block">
@@ -318,8 +334,8 @@ export function DashboardOverviewPage() {
   return (
     <div>
       <div className="mb-7">
-        <h1 className="text-2xl font-display font-extrabold text-navy-900 dark:text-slate-100">{greeting}, {name} 👋</h1>
-        <p className="text-[15px] text-slate-500 dark:text-slate-400 mt-1">Here's what's happening on your platform today.</p>
+        <h1 className="text-display-sm font-display font-extrabold text-navy-900 dark:text-slate-100">{greeting}, {name}.</h1>
+        <p className="text-[15px] text-slate-500 dark:text-slate-400 mt-1">A quick read on what is moving today.</p>
       </div>
       {user?.roles.includes('ADMIN') && <AdminDashboard />}
       {!user?.roles.includes('ADMIN') && user?.roles.includes('CREATOR') && <CreatorDashboard />}
@@ -396,7 +412,7 @@ export function DashboardSettingsPage() {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage your account preferences</p>
       </div>
       <Card className="p-6">
-        <h3 className="text-sm font-semibold mb-4">Profile</h3>
+        <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">Profile</h3>
         <div className="flex items-center gap-4 mb-5">
           <Avatar name={`${user?.firstName} ${user?.lastName}`} size="lg" />
           <Button variant="outline" size="sm">Change avatar</Button>
@@ -419,7 +435,7 @@ export function DashboardSettingsPage() {
       </Card>
 
       <Card className="p-5">
-        <h3 className="text-sm font-semibold mb-4">Roles</h3>
+        <h3 className="font-display text-sm font-bold text-navy-900 dark:text-slate-100 mb-4">Roles</h3>
         <div className="flex flex-wrap gap-2">
           {user?.roles.map(r => <Badge key={r} variant={r === 'ADMIN' ? 'danger' : r === 'CREATOR' ? 'purple' : 'info'}>{r}</Badge>)}
         </div>

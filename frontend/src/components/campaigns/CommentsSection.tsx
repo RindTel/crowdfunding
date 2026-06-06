@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Heart, Trash2, Reply, ChevronDown, MessageCircle } from 'lucide-react';
+import { Heart, Trash2, Reply, MessageCircle, ArrowRight } from 'lucide-react';
 import { useComments, useCreateComment, useDeleteComment, useLikeComment } from '../../hooks/useApi';
 import { useAuthStore } from '../../store/auth.store';
-import { Avatar, PageLoader, EmptyState } from '../../components/ui';
+import { Avatar, PageLoader, EmptyState, Button, Textarea } from '../../components/ui';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -53,7 +53,7 @@ function CommentItem({ comment, campaignId, depth = 0 }: {
   const isAdmin = user?.roles.includes('ADMIN');
 
   return (
-    <div className={`${depth > 0 ? 'ml-10 border-l-2 pl-4' : ''}`}>
+    <div className={`${depth > 0 ? 'ml-10 border-l border-slate-200/70 dark:border-white/10 pl-4' : ''}`}>
       <div className="flex gap-3">
         <Avatar
           name={`${comment.user.firstName} ${comment.user.lastName}`}
@@ -61,49 +61,56 @@ function CommentItem({ comment, campaignId, depth = 0 }: {
           size={depth > 0 ? 'sm' : 'md'}
         />
         <div className="flex-1 min-w-0">
-          <div className="bg-slate-50 rounded-2xl px-4 py-3 mb-1.5">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-sm font-semibold">
+          <div className="rounded-2xl border border-slate-200/70 bg-white px-4 py-3 mb-1.5 shadow-soft dark:border-white/10 dark:bg-navy-900">
+            <div className="flex items-center justify-between gap-3 mb-1.5">
+              <span className="font-display text-sm font-semibold text-navy-900 dark:text-slate-100 truncate">
                 {comment.user.firstName} {comment.user.lastName}
               </span>
-              <span className="text-xs">
+              <span className="text-xs text-slate-500 dark:text-slate-400 flex-shrink-0">
                 {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
               </span>
             </div>
-            <p className="text-sm leading-relaxed">{comment.content}</p>
+            <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 break-words">{comment.content}</p>
           </div>
 
-          <div className="flex items-center gap-3 px-1">
-            <button onClick={handleLike} className="flex items-center gap-1 text-xs hover:text-rose-500 transition-colors">
-              <Heart size={12} /> {comment.likesCount > 0 && comment.likesCount}
+          <div className="flex items-center gap-4 px-1">
+            <button onClick={handleLike} className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 transition-colors">
+              <Heart size={13} /> {comment.likesCount > 0 && comment.likesCount}
             </button>
             {isAuthenticated && depth === 0 && (
-              <button onClick={() => setShowReply(v => !v)} className="flex items-center gap-1 text-xs hover:text-brand-600 transition-colors">
-                <Reply size={12} /> Reply
+              <button onClick={() => setShowReply(v => !v)} className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400 transition-colors">
+                <Reply size={13} /> Reply
               </button>
             )}
             {(isOwner || isAdmin) && (
-              <button onClick={handleDelete} className="flex items-center gap-1 text-xs hover:text-red-500 transition-colors ml-auto">
-                <Trash2 size={11} /> Delete
+              <button onClick={handleDelete} className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors ml-auto">
+                <Trash2 size={12} /> Delete
               </button>
             )}
           </div>
 
           {showReply && (
-            <div className="mt-2 flex gap-2">
+            <div className="mt-3 flex gap-2">
               <Avatar name={`${user?.firstName} ${user?.lastName}`} size="sm" />
-              <div className="flex-1 flex gap-2">
-                <input
+              <div className="flex-1">
+                <Textarea
                   value={replyText}
                   onChange={e => setReplyText(e.target.value)}
-                  placeholder={`Reply to ${comment.user.firstName}…`}
-                  className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-300"
+                  placeholder={`Reply to ${comment.user.firstName}`}
+                  rows={2}
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleReply()}
                 />
-                <button onClick={handleReply} disabled={createComment.isPending || !replyText.trim()}
-                  className="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-medium hover:bg-brand-700 disabled:opacity-50 transition-colors">
-                  Post
-                </button>
+                <div className="flex justify-end mt-2">
+                  <Button
+                    size="sm"
+                    onClick={handleReply}
+                    loading={createComment.isPending}
+                    disabled={createComment.isPending || !replyText.trim()}
+                    leftIcon={<Reply size={13} />}
+                  >
+                    Post reply
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -148,35 +155,42 @@ export function CommentsSection({ campaignId }: { campaignId: string }) {
         <div className="flex gap-3">
           <Avatar name={`${user?.firstName} ${user?.lastName}`} />
           <div className="flex-1">
-            <textarea
+            <Textarea
               value={newComment}
               onChange={e => setNewComment(e.target.value)}
-              placeholder="Share your thoughts or ask a question…"
+              placeholder="Share your thoughts or ask a question"
               rows={3}
-              className="w-full px-4 py-3 text-sm border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-brand-300 placeholder:text-slate-500"
             />
             <div className="flex justify-end mt-2">
-              <button
+              <Button
                 onClick={handleSubmit}
+                loading={createComment.isPending}
                 disabled={createComment.isPending || !newComment.trim()}
-                className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-colors"
+                leftIcon={<MessageCircle size={15} />}
               >
-                {createComment.isPending ? 'Posting…' : 'Post comment'}
-              </button>
+                Post comment
+              </Button>
             </div>
           </div>
         </div>
       ) : (
-        <div className="text-center py-6 rounded-2xl border">
-          <MessageCircle size={24} className="text-slate-300 mx-auto mb-2" />
-          <p className="text-sm mb-3">Sign in to leave a comment</p>
-          <a href="/login" className="text-sm text-brand-600 font-medium hover:text-brand-700">Sign in →</a>
+        <div className="text-center py-8 px-4 rounded-2xl border border-slate-200/70 bg-white shadow-soft dark:border-white/10 dark:bg-navy-900">
+          <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mx-auto mb-3 ring-1 ring-brand-100 dark:bg-brand-500/10 dark:text-brand-300 dark:ring-brand-500/20">
+            <MessageCircle size={22} />
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">Sign in to join the conversation.</p>
+          <a
+            href="/login"
+            className="inline-flex items-center gap-1.5 font-display text-sm font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300 transition-colors"
+          >
+            Sign in <ArrowRight size={15} />
+          </a>
         </div>
       )}
 
       {/* Comments list */}
       {isLoading ? <PageLoader /> : comments.length === 0 ? (
-        <EmptyState icon={<MessageCircle size={36} />} title="No comments yet" description="Be the first to start the conversation" />
+        <EmptyState icon={<MessageCircle size={28} />} title="No comments yet" description="Be the first to start the conversation." />
       ) : (
         <div className="space-y-4">
           {comments.map(c => <CommentItem key={c.id} comment={c} campaignId={campaignId} />)}
@@ -185,16 +199,16 @@ export function CommentsSection({ campaignId }: { campaignId: string }) {
 
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <button disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)}
-            className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors">
-            Prev
-          </button>
-          <span className="text-xs">{page} / {meta.totalPages}</span>
-          <button disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)}
-            className="px-3 py-1.5 text-xs border rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors">
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <Button size="sm" variant="outline" disabled={!meta.hasPrev} onClick={() => setPage(p => p - 1)}>
+            Previous
+          </Button>
+          <span className="font-display text-xs font-semibold text-slate-600 dark:text-slate-300 tnum">
+            {page} / {meta.totalPages}
+          </span>
+          <Button size="sm" variant="outline" disabled={!meta.hasNext} onClick={() => setPage(p => p + 1)}>
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>

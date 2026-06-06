@@ -4,8 +4,11 @@
  * ────────────────────────────────────────────────────────────────
  *  FundForge Design System
  * ────────────────────────────────────────────────────────────────
- *  A disciplined two-colour system (+ neutrals) tuned for fintech
- *  trust and "growth / money" psychology.
+ *  "The Campaign Press" — editorial first, fintech second. A
+ *  disciplined two-ink system (+ neutrals): every campaign reads
+ *  like a hand-set broadsheet, every number reads like a clean
+ *  ledger. Loud on brand surfaces, calm on the money tools.
+ *  See DESIGN.md for the full system + named rules.
  *
  *  PALETTE
  *    brand  → Electric Teal   the single hero/action colour.
@@ -86,10 +89,13 @@ export default {
       },
 
       fontSize: {
-        // Display scale for headings — paired with font-display
-        'display-sm': ['1.875rem', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '700' }],
+        // Display scale for headings — paired with font-display (Sora)
+        'display-sm': ['1.875rem', { lineHeight: '1.15', letterSpacing: '-0.02em',  fontWeight: '700' }],
         'display':    ['2.5rem',   { lineHeight: '1.1',  letterSpacing: '-0.025em', fontWeight: '800' }],
         'display-lg': ['3.5rem',   { lineHeight: '1.05', letterSpacing: '-0.03em',  fontWeight: '800' }],
+        // Poster scale — fluid hero headlines on brand surfaces only
+        'poster':     ['clamp(2.75rem, 7vw, 5.5rem)', { lineHeight: '0.95', letterSpacing: '-0.035em', fontWeight: '800' }],
+        'poster-sm':  ['clamp(2rem, 4.5vw, 3.25rem)', { lineHeight: '1',    letterSpacing: '-0.03em',  fontWeight: '800' }],
       },
 
       boxShadow: {
@@ -132,6 +138,10 @@ export default {
           '0%,100%': { transform: 'translateY(0)' },
           '50%':     { transform: 'translateY(-6px)' },
         },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to:   { transform: 'translateX(-50%)' },
+        },
       },
 
       animation: {
@@ -141,6 +151,7 @@ export default {
         shimmer:     'shimmer 5.5s linear infinite',
         'pulse-ring':'pulse-ring 2.4s ease-out infinite',
         float:       'float 4s ease-in-out infinite',
+        marquee:     'marquee 38s linear infinite',
       },
     },
   },
